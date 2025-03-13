@@ -1,0 +1,8 @@
+{
+  "name": "minemaker",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "libraries/*"
+  ]
+}
