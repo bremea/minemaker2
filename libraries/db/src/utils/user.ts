@@ -4,7 +4,7 @@ import { User } from '$src/types/userTypes';
 
 /** Creates new user */
 export async function createUser(playerUUID: string, username: string, email: string): Promise<void> {
-	await pool.query('INSERT INTO users (player_uuid, username, email) VALUES (UUID_TO_BIN(?), ?, ?);', [
+	await pool.query('INSERT INTO users (player_uuid, username, email) VALUES (?, ?, ?);', [
 		playerUUID,
 		username,
 		email
@@ -14,7 +14,7 @@ export async function createUser(playerUUID: string, username: string, email: st
 /** Gets user via UUID */
 export async function getUser(playerUUID: string): Promise<User> {
 	const [userData] = await pool.query<DatabaseUser[]>(
-		'SELECT * FROM users WHERE player_uuid = UUID_TO_BIN(?);',
+		'SELECT * FROM users WHERE player_uuid = ?;',
 		[playerUUID]
 	);
 
@@ -35,7 +35,7 @@ export async function getUser(playerUUID: string): Promise<User> {
 /** Test if user exists using UUID */
 export async function userExists(playerUUID: string): Promise<boolean> {
 	const [userData] = await pool.query<DatabaseUser[]>(
-		'SELECT 1 FROM users WHERE player_uuid = UUID_TO_BIN(?);',
+		'SELECT 1 FROM users WHERE player_uuid = ?;',
 		[playerUUID]
 	);
 
