@@ -1,3 +1,8 @@
 <script lang="ts">
-	import { ArrowButtonLeft, Button } from '@minemaker/ui';
+	import LandingHeader from '$lib/components/navigation/landingHeader.svelte';
+	import Navbar from '$lib/components/navigation/navbar.svelte';
 </script>
+
+<Navbar />
+
+<LandingHeader />
