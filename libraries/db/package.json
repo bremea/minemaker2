@@ -1,11 +1,20 @@
 {
-  "name": "db",
-  "module": "index.ts",
+  "name": "@minemaker/db",
+  "module": "src/index.ts",
+  "main": "./src/index.ts",
+  "version": "1.0.0",
   "type": "module",
+  "files": [
+	"src",
+	"src/*"
+  ],
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "mysql2": "^3.13.0"
   }
 }
