@@ -16,6 +16,6 @@
 			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
 			labore et dolore magna aliqua.
 		</p>
-		<ArrowButtonRight size="xl">Start playing</ArrowButtonRight>
+		<ArrowButtonRight size="lg" class="font-bold">Start playing</ArrowButtonRight>
 	</div>
 </header>
