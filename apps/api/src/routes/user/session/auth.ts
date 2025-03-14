@@ -40,7 +40,7 @@ export default (app: ElysiaApp) =>
 			});
 
 			return {
-				token: jwt.sign({ uuid })
+				token: await jwt.sign({ uuid })
 			};
 		},
 		{ body: t.Object({ code: t.String() }) }
