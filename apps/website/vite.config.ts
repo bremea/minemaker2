@@ -10,5 +10,10 @@ export default defineConfig({
 		Icons({
 			compiler: 'svelte'
 		})
-	]
+	],
+    server: {
+        proxy: {
+            '/api': process.env.API_URL!,
+        },
+    },
 });
