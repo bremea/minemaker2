@@ -1,22 +1,23 @@
 {
-  "name": "api",
-  "version": "1.0.50",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/app.ts"
-  },
-  "dependencies": {
-    "@elysiajs/jwt": "^1.2.0",
-    "elysia": "latest",
-    "elysia-autoload": "^1.5.1"
-  },
-  "devDependencies": {
-    "@types/node": "^22.13.10",
-    "bun-types": "^1.2.5",
-    "eslint": "^9.22.0",
-    "eslint-config-prettier": "^10.1.1",
-    "prettier": "^3.5.3",
-    "typescript-eslint": "^8.26.1"
-  },
-  "module": "src/app.js"
+	"name": "api",
+	"version": "1.0.50",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "bun run --watch src/app.ts"
+	},
+	"dependencies": {
+		"@elysiajs/jwt": "^1.2.0",
+		"elysia": "latest",
+		"elysia-autoload": "^1.5.1",
+		"@minemaker/db": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/node": "^22.13.10",
+		"bun-types": "^1.2.5",
+		"eslint": "^9.22.0",
+		"eslint-config-prettier": "^10.1.1",
+		"prettier": "^3.5.3",
+		"typescript-eslint": "^8.26.1"
+	},
+	"module": "src/app.js"
 }
