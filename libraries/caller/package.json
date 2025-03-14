@@ -1,11 +1,17 @@
 {
-  "name": "caller",
-  "module": "index.ts",
-  "type": "module",
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  }
+	"name": "@minemaker/caller",
+	"module": "src/index.ts",
+	"main": "./src/index.ts",
+	"version": "1.0.0",
+	"type": "module",
+	"files": [
+		"src",
+		"src/*"
+	],
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	}
 }
