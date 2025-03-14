@@ -1,4 +1,5 @@
 export * from './components/input/index.js';
 export * from './components/input/buttons/index.js';
 export * from './components/navigation/index.js';
+export * from './components/navigation/links/index.js';
 export { default as GlobalStyles } from './globalStyles.svelte';

@@ -3,9 +3,9 @@ import { t } from 'elysia';
 import { userExists, createUser } from '@minemaker/db';
 
 export default (app: ElysiaApp) =>
-	app.post(
+	app.get(
 		'/',
-		async ({ body, jwt, cookie: { refreshToken } }) => {
+		async ({ query, jwt }) => {
 			const accessTokenRequest = await fetch(
 				'https://login.microsoftonline.com/consumers/oauth2/v2.0/token',
 				{
@@ -13,14 +13,18 @@ export default (app: ElysiaApp) =>
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded'
 					},
-					body: `client_id=${process.env.MICROSOFT_CLIENT_ID}&scope=XboxLive.signin%20XboxLive.offline_access&code=${body.code}&redirect_uri=${process.env.MICROSOFT_CLIENT_REDIRECT_URI}&grant_type=authorization_code&client_secret=${process.env.MICROSOFT_CLIENT_SECRET}`
+					body: `client_id=${process.env.MICROSOFT_CLIENT_ID}&scope=XboxLive.signin%20XboxLive.offline_access&code=${query.code}&redirect_uri=${process.env.MICROSOFT_CLIENT_REDIRECT_URI}&grant_type=authorization_code&client_secret=${process.env.MICROSOFT_CLIENT_SECRET}`
 				}
 			);
 
-			const accessTokenResponse = await accessTokenRequest.json();
+			try {
+				var accessTokenResponse = await accessTokenRequest.json();
+			} catch (e) {
+				throw 'Internal error';
+			}
 
 			if (accessTokenResponse['error'] != undefined) {
-				throw accessTokenResponse['error_description'];
+				throw 'Invalid code';
 			}
 
 			/* Fetch UUID & username from minecraft API, and email from Microsoft account */
@@ -33,15 +37,10 @@ export default (app: ElysiaApp) =>
 				await createUser(uuid, username, email);
 			}
 
-			refreshToken.set({
-				path: '/api/user/session/refresh',
-				httpOnly: true,
-				sameSite: true
-			});
-
 			return {
-				token: await jwt.sign({ uuid })
+				token: await jwt.sign({ uuid }),
+				refreshToken: accessTokenResponse['refresh_token']
 			};
 		},
-		{ body: t.Object({ code: t.String() }) }
+		{ query: t.Object({ code: t.String() }) }
 	);

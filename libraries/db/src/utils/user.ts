@@ -1,6 +1,6 @@
 import { pool } from '$src/connection';
 import { DatabaseUser } from '$src/types/userTypes';
-import { User } from '$src/types/userTypes';
+import { type User } from '@minemaker/caller';
 
 /** Creates new user */
 export async function createUser(playerUUID: string, username: string, email: string): Promise<void> {

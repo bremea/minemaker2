@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { HTMLButtonAttributes } from 'svelte/elements';
+	import type { HTMLAnchorAttributes } from 'svelte/elements';
 
 	interface Props {
 		color: 'blue' | 'purple' | 'gray' | 'darkgray';
 		size: 'sm' | 'md' | 'lg' | 'xl';
 	}
 
-	export interface ButtonProps extends HTMLButtonAttributes {
+	export interface LinkButtonProps extends HTMLAnchorAttributes {
 		color?: Props['color'];
 		size?: Props['size'];
 		class?: string;
@@ -16,7 +16,7 @@
 		blue: 'bg-mm-blue hover:bg-mm-blue-light outline-mm-blue text-black',
 		purple: 'bg-mm-purple hover:bg-mm-purple-light outline-mm-purple text-black',
 		gray: 'bg-gray-600 hover:bg-gray-500 outline-gray-600 text-white',
-		darkgray: 'bg-gray-800 hover:bg-gray-700 outline-gray-800 text-white',
+		darkgray: 'bg-gray-800 hover:bg-gray-700 outline-gray-800 text-white'
 	};
 
 	const sizeClasses: { [K in Props['size']]: string } = {
@@ -32,12 +32,12 @@
 		size = 'md',
 		class: className,
 		...others
-	}: ButtonProps = $props();
+	}: LinkButtonProps = $props();
 </script>
 
-<button
-	class={`${colorClasses[color]} group relative flex h-min w-min cursor-pointer items-center space-x-2 rounded-full ${sizeClasses[size]} text-nowrap transition-all outline-0 hover:shadow-lg focus:outline-2 focus:outline-offset-2 active:scale-95 ${className}`}
+<a
+	class={`${colorClasses[color]} group relative flex h-min w-min cursor-pointer items-center space-x-2 rounded-full ${sizeClasses[size]} text-nowrap outline-0 transition-all hover:shadow-lg focus:outline-2 focus:outline-offset-2 active:scale-95 ${className}`}
 	{...others}
 >
 	{@render children?.()}
-</button>
+</a>

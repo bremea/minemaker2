@@ -7,12 +7,3 @@ export interface DatabaseUser extends RowDataPacket {
 	created_at: string;
 	last_login: string;
 }
-
-export interface User {
-	uuid: string;
-	username: string;
-	email: string;
-	created: Date;
-	lastLogin: Date;
-	gems: number;
-}
