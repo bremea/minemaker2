@@ -30,4 +30,14 @@ export default (app: ElysiaApp) =>
 					id: t.String()
 				})
 			}
-		);
+		)
+		.patch('', async ({ params: { id } }) => {}, {
+			params: t.Object({
+				id: t.String()
+			}),
+			body: t.Object({
+				name: t.Optional(t.String()),
+				description: t.Optional(t.String()),
+				thumbnail: t.Optional(t.File({ format: 'image/*' })),
+			})
+		});
