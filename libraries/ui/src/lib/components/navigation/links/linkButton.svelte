@@ -1,25 +1,25 @@
 <script lang="ts">
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
 
-	interface Props {
+	export interface LinkButtonPropOptions {
 		color: 'blue' | 'purple' | 'gray' | 'darkgray';
 		size: 'sm' | 'md' | 'lg' | 'xl';
 	}
 
 	export interface LinkButtonProps extends HTMLAnchorAttributes {
-		color?: Props['color'];
-		size?: Props['size'];
+		color?: LinkButtonPropOptions['color'];
+		size?: LinkButtonPropOptions['size'];
 		class?: string;
 	}
 
-	const colorClasses: { [K in Props['color']]: string } = {
+	const colorClasses: { [K in LinkButtonPropOptions['color']]: string } = {
 		blue: 'bg-mm-blue hover:bg-mm-blue-light outline-mm-blue text-black',
 		purple: 'bg-mm-purple hover:bg-mm-purple-light outline-mm-purple text-black',
 		gray: 'bg-gray-600 hover:bg-gray-500 outline-gray-600 text-white',
 		darkgray: 'bg-gray-800 hover:bg-gray-700 outline-gray-800 text-white'
 	};
 
-	const sizeClasses: { [K in Props['size']]: string } = {
+	const sizeClasses: { [K in LinkButtonPropOptions['size']]: string } = {
 		sm: 'px-4 py-1 text-sm',
 		md: 'px-6 py-2 text-base',
 		lg: 'px-8 py-3 text-lg',
@@ -36,7 +36,7 @@
 </script>
 
 <a
-	class={`${colorClasses[color]} group relative flex h-min w-min cursor-pointer items-center space-x-2 rounded-full ${sizeClasses[size]} text-nowrap outline-0 transition-all hover:shadow-lg focus:outline-2 focus:outline-offset-2 active:scale-95 ${className}`}
+	class={`${colorClasses[color]} group relative flex h-min w-min cursor-pointer items-center space-x-2 rounded-full ${sizeClasses[size]} text-nowrap outline-0 transition-all hover:shadow-lg hover:outline-2 hover:outline-offset-2 active:scale-95 ${className}`}
 	{...others}
 >
 	{@render children?.()}

@@ -7,9 +7,10 @@
 	},
 	"dependencies": {
 		"@elysiajs/jwt": "^1.2.0",
+		"@minemaker/db": "workspace:*",
 		"elysia": "latest",
 		"elysia-autoload": "^1.5.1",
-		"@minemaker/db": "workspace:*"
+		"snowyflake": "^2.0.1"
 	},
 	"devDependencies": {
 		"@types/node": "^22.13.10",

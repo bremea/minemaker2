@@ -1,6 +1,7 @@
 import { Elysia } from 'elysia';
 import { autoload } from 'elysia-autoload';
 import { jwt } from '@elysiajs/jwt';
+import { Epoch, Snowyflake } from 'snowyflake';
 
 const app = new Elysia()
 	.use(
@@ -8,6 +9,13 @@ const app = new Elysia()
 			name: 'jwt',
 			secret: process.env.JWT_SECRET!,
 			exp: '1h'
+		})
+	)
+	.decorate(
+		'snowflake',
+		new Snowyflake({
+			workerId: BigInt(process.env.WORKER_ID!),
+			epoch: BigInt(15886512000000)
 		})
 	)
 	.use(

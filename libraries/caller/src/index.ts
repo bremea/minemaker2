@@ -1,4 +1,5 @@
 export * from './user/index';
+export * from './projects/index';
 export * from './types/index';
 
 type HttpMethods =
@@ -18,7 +19,7 @@ interface ClientOptions {
 }
 
 interface RequestOptions extends BunFetchRequestInit {
-	refreshIfUnauthorized: boolean;
+	refreshIfUnauthorized?: boolean;
 }
 
 export default class RestClient {

@@ -1,16 +1,28 @@
 <script lang="ts">
 	import FluentChevronRight24Filled from '~icons/fluent/chevron-right-24-filled';
-	import type { HTMLAnchorAttributes } from 'svelte/elements';
+	import type { LinkButtonPropOptions, LinkButtonProps } from './linkButton.svelte';
+	import LinkButton from './linkButton.svelte';
 
-	let props: HTMLAnchorAttributes = $props();
+	let props: LinkButtonProps = $props();
+
+	const textMarginClasses: { [K in LinkButtonPropOptions['size']]: string } = {
+		sm: 'mr-4',
+		md: 'mr-5',
+		lg: 'mr-6',
+		xl: 'mr-7'
+	};
+
+	const arrowMarginClasses: { [K in LinkButtonPropOptions['size']]: string } = {
+		sm: 'right-4 group-hover:right-2',
+		md: 'right-5 group-hover:right-3',
+		lg: 'right-6 group-hover:right-4',
+		xl: 'right-7 group-hover:right-5'
+	};
 </script>
 
-<a
-	class="bg-mm-blue hover:bg-mm-blue-light focus:outline-mm-blue group relative flex w-min cursor-pointer items-end space-x-2 rounded-full px-8 py-2 text-xl text-nowrap text-black transition-all hover:shadow-lg focus:outline-2 focus:outline-offset-2 active:scale-95"
-	{...props}
->
-	<span class="mr-6">{@render props.children?.()}</span>
+<LinkButton {...props}>
+	<span class={textMarginClasses[props.size ?? 'lg']}>{@render props.children?.()}</span>
 	<FluentChevronRight24Filled
-		class="absolute right-6 bottom-[9px] transition-all group-hover:right-4"
+		class={`absolute transition-all ${arrowMarginClasses[props.size ?? 'lg']}`}
 	/>
-</a>
+</LinkButton>

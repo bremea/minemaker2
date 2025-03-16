@@ -2,15 +2,14 @@ import { getLoggedIn, setApiClient, setLoggedIn, setUserState } from '$lib/state
 import RestClient, { getMe, staticTokenRefresh } from '@minemaker/caller';
 import type { LayoutLoad } from './$types';
 import { PUBLIC_API_URL } from '$env/static/public';
+import { redirect } from '@sveltejs/kit';
+import { browser } from '$app/environment'; 
 
 export const load: LayoutLoad = async () => {
-	if (getLoggedIn()) return;
+	if (getLoggedIn() || !browser) return;
 
 	try {
 		const tokenFetch = await staticTokenRefresh(PUBLIC_API_URL);
-		console.log(tokenFetch)
-
-
 		const apiClient = new RestClient(tokenFetch.token, {
 			apiUrl: PUBLIC_API_URL,
 			refreshWithCookie: true
@@ -22,7 +21,9 @@ export const load: LayoutLoad = async () => {
 		setUserState(me);
 
 		setLoggedIn(true);
+
+		return {apiClient};
 	} catch (e) {
-		return;
+		redirect(303, '/login');
 	}
 };

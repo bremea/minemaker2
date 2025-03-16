@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowButtonRight } from '@minemaker/ui';
+	import { ArrowLinkRight } from '@minemaker/ui';
 </script>
 
 <header
@@ -16,6 +16,6 @@
 			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
 			labore et dolore magna aliqua.
 		</p>
-		<ArrowButtonRight size="lg" class="font-bold">Start playing</ArrowButtonRight>
+		<ArrowLinkRight size="lg" class="font-bold">Start playing</ArrowLinkRight>
 	</div>
 </header>

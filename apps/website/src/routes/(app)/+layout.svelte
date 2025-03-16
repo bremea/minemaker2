@@ -1,6 +1,12 @@
 <script lang="ts">
-	import '../../app.css';
+	import Footer from '$lib/components/navigation/footer.svelte';
+	import Navbar from '$lib/components/navigation/navbar.svelte';
+
 	let { children } = $props();
 </script>
 
-{@render children()}
+<Navbar />
+<div class="grow h-full">
+	{@render children()}
+</div>
+<Footer />
