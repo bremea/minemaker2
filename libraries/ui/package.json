@@ -2,7 +2,7 @@
 	"name": "@minemaker/ui",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "svelte-package -w",
 		"build": "svelte-package",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
