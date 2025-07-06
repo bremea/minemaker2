@@ -1,10 +1,10 @@
 import type { ElysiaApp } from '$src/app';
 import { createProject, getProject } from '@minemaker/db';
 import { t } from 'elysia';
-import verifyAuth from 'lib/utils/auth';
+import { blockAuth } from 'lib/utils/auth';
 
 export default (app: ElysiaApp) =>
-	app.use(verifyAuth).post(
+	app.use(blockAuth).post(
 		'/',
 		async ({ uuid, body, snowflake }) => {
 			const id = snowflake.nextId().toString();

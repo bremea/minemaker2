@@ -5,6 +5,7 @@ export interface DatabaseProject extends RowDataPacket {
 	owner: string;
 	description: string;
 	created_at: string;
+	public: boolean;
 }
 
 export interface DatabaseTags extends RowDataPacket {

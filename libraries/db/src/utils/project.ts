@@ -17,6 +17,21 @@ export async function deleteProject(id: string): Promise<void> {
 	await pool.query('DELETE FROM games WHERE game_id = ?;', [id]);
 }
 
+/** Modifies a project */
+export async function updateProject(
+	id: string,
+	name: string,
+	description: string,
+	isPublic: boolean
+): Promise<void> {
+	await pool.query('UPDATE games SET name = ?, description = ?, public = ? WHERE id = ?;', [
+		name,
+		description,
+		isPublic,
+		id
+	]);
+}
+
 /** Gets user's project by UUID */
 export async function getUserProjects(uuid: string): Promise<Project[]> {
 	const [projects] = await pool.query<DatabaseProject[]>('SELECT * FROM games WHERE owner = ?;', [
@@ -31,7 +46,8 @@ export async function getUserProjects(uuid: string): Promise<Project[]> {
 			name: project.name,
 			owner: project.owner,
 			description: project.description,
-			createdAt: new Date(project.created_at)
+			createdAt: new Date(project.created_at),
+			public: project.public
 		});
 	}
 
@@ -54,7 +70,8 @@ export async function getProject(id: string): Promise<Project> {
 		name: projectData[0].name,
 		owner: projectData[0].owner,
 		description: projectData[0].description,
-		createdAt: new Date(projectData[0].created_at)
+		createdAt: new Date(projectData[0].created_at),
+		public: projectData[0].public
 	};
 }
 

@@ -1,17 +1,27 @@
 import type { ElysiaApp } from '$src/app';
-import { getProject, deleteProject } from '@minemaker/db';
+import { getProject, deleteProject, updateProject } from '@minemaker/db';
+import { error } from 'console';
 import { t } from 'elysia';
-import verifyAuth from 'lib/utils/auth';
+import { checkAuth } from 'lib/utils/auth';
 
 // get project
 export default (app: ElysiaApp) =>
 	app
-		.use(verifyAuth)
+		.use(checkAuth)
 		.get(
 			'',
-			async ({ params: { id } }) => {
-				const projects = await getProject(id);
-				return projects;
+			async ({ params: { id }, uuid, authenticated }) => {
+				const project = await getProject(id);
+
+				if (project.public) {
+					return project;
+				}
+
+				if (!project.public && authenticated && project.owner === uuid) {
+					return project;
+				} else {
+					return error(401, { error: true, code: 'UNAUTHORIZED' });
+				}
 			},
 			{
 				params: t.Object({
@@ -21,7 +31,13 @@ export default (app: ElysiaApp) =>
 		)
 		.delete(
 			'',
-			async ({ params: { id } }) => {
+			async ({ params: { id }, uuid, authenticated }) => {
+				const project = await getProject(id);
+
+				if (!authenticated || uuid !== project.owner) {
+					return error(401, { error: true, code: 'UNAUTHORIZED' });
+				}
+
 				await deleteProject(id);
 				return;
 			},
@@ -31,13 +47,28 @@ export default (app: ElysiaApp) =>
 				})
 			}
 		)
-		.patch('', async ({ params: { id } }) => {}, {
-			params: t.Object({
-				id: t.String()
-			}),
-			body: t.Object({
-				name: t.Optional(t.String()),
-				description: t.Optional(t.String()),
-				thumbnail: t.Optional(t.File({ format: 'image/*' })),
-			})
-		});
+		.patch(
+			'',
+			async ({ params: { id }, body, uuid, authenticated }) => {
+				const project = await getProject(id);
+
+				if (!authenticated || uuid !== project.owner) {
+					return error(401, { error: true, code: 'UNAUTHORIZED' });
+				}
+
+				const newData = { ...project, ...body };
+
+				await updateProject(id, newData.name, newData.description, newData.public);
+				return await getProject(id);
+			},
+			{
+				params: t.Object({
+					id: t.String()
+				}),
+				body: t.Object({
+					name: t.Optional(t.String()),
+					description: t.Optional(t.String()),
+					public: t.Optional(t.Boolean())
+				})
+			}
+		);
