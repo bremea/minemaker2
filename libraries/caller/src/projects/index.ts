@@ -25,7 +25,7 @@ export async function updateProject(
 	client: RestClient,
 	id: string,
 	data: { name?: string; description?: string; public?: boolean }
-): Promise<void> {
+): Promise<Project> {
 	return await client.request('PATCH', `projects/${id}`, {
 		body: JSON.stringify(data)
 	});

@@ -24,7 +24,7 @@ export async function updateProject(
 	description: string,
 	isPublic: boolean
 ): Promise<void> {
-	await pool.query('UPDATE games SET name = ?, description = ?, public = ? WHERE id = ?;', [
+	await pool.query('UPDATE games SET name = ?, description = ?, public = ? WHERE game_id = ?;', [
 		name,
 		description,
 		isPublic,
