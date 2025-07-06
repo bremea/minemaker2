@@ -20,3 +20,13 @@ export async function getProject(client: RestClient, id: string): Promise<Projec
 export async function deleteProject(client: RestClient, id: string): Promise<void> {
 	return await client.request('DELETE', `projects/${id}`);
 }
+
+export async function updateProject(
+	client: RestClient,
+	id: string,
+	data: { name?: string; description?: string; public?: boolean }
+): Promise<void> {
+	return await client.request('PATCH', `projects/${id}`, {
+		body: JSON.stringify(data)
+	});
+}
