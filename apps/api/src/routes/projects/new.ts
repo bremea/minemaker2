@@ -7,7 +7,8 @@ export default (app: ElysiaApp) =>
 	app.use(verifyAuth).post(
 		'/',
 		async ({ uuid, body, snowflake }) => {
-			const id = snowflake.nextId();
+			const id = snowflake.nextId().toString();
+			console.log(id)
 			await createProject(id, uuid, body.name);
 
 			const project = await getProject(id.toString());

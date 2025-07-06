@@ -15,7 +15,7 @@ const app = new Elysia()
 		'snowflake',
 		new Snowyflake({
 			workerId: BigInt(process.env.WORKER_ID!),
-			epoch: BigInt(15886512000000)
+			epoch: BigInt(1588651200000)
 		})
 	)
 	.use(
