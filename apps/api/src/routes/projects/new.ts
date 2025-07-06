@@ -8,7 +8,6 @@ export default (app: ElysiaApp) =>
 		'/',
 		async ({ uuid, body, snowflake }) => {
 			const id = snowflake.nextId().toString();
-			console.log(id)
 			await createProject(id, uuid, body.name);
 
 			const project = await getProject(id.toString());

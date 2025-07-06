@@ -23,8 +23,6 @@ export async function getUserProjects(uuid: string): Promise<Project[]> {
 		uuid
 	]);
 
-	console.log(typeof projects[0].game_id);
-
 	const returnArray = [];
 
 	for (const project of projects) {
