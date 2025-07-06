@@ -11,14 +11,14 @@ const verifyAuth = new Elysia()
 	)
 	.resolve({ as: 'scoped' }, async ({ headers, error, jwt }) => {
 		if (!headers.authorization || !headers.authorization.startsWith('Bearer ')) {
-			return error(401, 'Unauthorized');
+			return error(401, {error: true, code: 'UNAUTHORIZED'});
 		}
 
 		const token = headers.authorization.substring(7, headers.authorization.length);
 		const userData = await jwt.verify(token);
 
 		if (!userData) {
-			return error(401, 'Unauthorized');
+			return error(401, {error: true, code: 'UNAUTHORIZED'});
 		}
 
 		return {
