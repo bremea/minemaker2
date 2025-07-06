@@ -1,6 +1,5 @@
 import type { ElysiaApp } from '$src/app';
 import { getProject, deleteProject, updateProject } from '@minemaker/db';
-import { error } from 'console';
 import { t } from 'elysia';
 import { checkAuth } from 'lib/utils/auth';
 
@@ -10,7 +9,7 @@ export default (app: ElysiaApp) =>
 		.use(checkAuth)
 		.get(
 			'',
-			async ({ params: { id }, uuid, authenticated }) => {
+			async ({ params: { id }, uuid, authenticated, error }) => {
 				const project = await getProject(id);
 
 				if (project.public) {
@@ -31,7 +30,7 @@ export default (app: ElysiaApp) =>
 		)
 		.delete(
 			'',
-			async ({ params: { id }, uuid, authenticated }) => {
+			async ({ params: { id }, uuid, authenticated, error }) => {
 				const project = await getProject(id);
 
 				if (!authenticated || uuid !== project.owner) {
@@ -49,7 +48,7 @@ export default (app: ElysiaApp) =>
 		)
 		.patch(
 			'',
-			async ({ params: { id }, body, uuid, authenticated }) => {
+			async ({ params: { id }, body, uuid, authenticated, error }) => {
 				const project = await getProject(id);
 
 				if (!authenticated || uuid !== project.owner) {
