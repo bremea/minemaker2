@@ -67,3 +67,20 @@ export async function staticTokenRefresh(apiUrl: string): Promise<{ token: strin
 
 	return newToken;
 }
+
+export async function tokenRefresh(
+	apiUrl: string,
+	refreshToken: string
+): Promise<{ token: string; refreshToken: string }> {
+	const tempApiClient = new RestClient('temp', { apiUrl, refreshWithCookie: true });
+
+	const newToken = await tempApiClient.request<{ token: string; refreshToken: string }>(
+		'POST',
+		'user/session/refresh',
+		{
+			body: JSON.stringify({ refreshToken })
+		}
+	);
+
+	return newToken;
+}

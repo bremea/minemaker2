@@ -1,11 +1,14 @@
 {
-  "name": "minemaker",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "libraries/*"
-  ],
-  "dependencies": {
-    "tailwindcss": "^4.0.14"
-  }
+	"name": "minemaker",
+	"private": true,
+	"workspaces": [
+		"apps/*",
+		"libraries/*"
+	],
+	"dependencies": {
+		"@tailwindcss/forms": "^0.5.10",
+		"@tailwindcss/typography": "^0.5.16",
+		"@tailwindcss/vite": "^4.1.11",
+		"tailwindcss": "^4.1.11"
+	}
 }

@@ -4,6 +4,7 @@
 	import { setApiClient, setLoggedIn, setUserState } from '$lib/state.svelte';
 	import RestClient, { getMe, login } from '@minemaker/caller';
 	import { Input, Error, ArrowButtonRight } from '@minemaker/ui';
+	import { load } from '@tauri-apps/plugin-store';
 
 	let email = $state('');
 	let password = $state('');
@@ -19,12 +20,16 @@
 		loading = true;
 
 		try {
+			const store = await load('auth.json', { autoSave: true });
+
 			const tokenData = await login(PUBLIC_API_URL, email, password);
 
 			const apiClient = new RestClient(tokenData.token, {
 				apiUrl: PUBLIC_API_URL,
 				refreshWithCookie: true
 			});
+
+			await store.set('refreshToken', tokenData.refreshToken);
 
 			setApiClient(apiClient);
 
