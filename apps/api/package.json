@@ -3,13 +3,17 @@
 	"version": "1.0.50",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "bun run --watch src/app.ts"
+		"dev": "DEVELOPMENT_MODE=true bun run --watch src/app.ts"
 	},
 	"dependencies": {
 		"@elysiajs/jwt": "^1.2.0",
 		"@minemaker/db": "workspace:*",
+		"@minemaker/types": "workspace:*",
+		"@types/bcrypt": "^5.0.2",
+		"bcrypt": "^6.0.0",
 		"elysia": "latest",
 		"elysia-autoload": "^1.5.1",
+		"elysia-ip": "^1.0.10",
 		"snowyflake": "^2.0.1"
 	},
 	"devDependencies": {

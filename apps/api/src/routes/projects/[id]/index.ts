@@ -1,5 +1,5 @@
 import type { ElysiaApp } from '$src/app';
-import { getProject, deleteProject, updateProject } from '@minemaker/db';
+import { getGame, deleteGame, updateGame } from '@minemaker/db';
 import { t } from 'elysia';
 import { checkAuth } from 'lib/utils/auth';
 
@@ -10,7 +10,7 @@ export default (app: ElysiaApp) =>
 		.get(
 			'',
 			async ({ params: { id }, uuid, authenticated, error }) => {
-				const project = await getProject(id);
+				const project = await getGame(id);
 
 				if (project.public) {
 					return project;
@@ -31,13 +31,13 @@ export default (app: ElysiaApp) =>
 		.delete(
 			'',
 			async ({ params: { id }, uuid, authenticated, error }) => {
-				const project = await getProject(id);
+				const project = await getGame(id);
 
 				if (!authenticated || uuid !== project.owner) {
 					return error(401, { error: true, code: 'UNAUTHORIZED' });
 				}
 
-				await deleteProject(id);
+				await deleteGame(id);
 				return;
 			},
 			{
@@ -49,7 +49,7 @@ export default (app: ElysiaApp) =>
 		.patch(
 			'',
 			async ({ params: { id }, body, uuid, authenticated, error }) => {
-				const project = await getProject(id);
+				const project = await getGame(id);
 
 				if (!authenticated || uuid !== project.owner) {
 					return error(401, { error: true, code: 'UNAUTHORIZED' });
@@ -57,8 +57,8 @@ export default (app: ElysiaApp) =>
 
 				const newData = { ...project, ...body };
 
-				await updateProject(id, newData.name, newData.description, newData.public);
-				return await getProject(id);
+				await updateGame(id, newData.name, newData.description, newData.public);
+				return await getGame(id);
 			},
 			{
 				params: t.Object({

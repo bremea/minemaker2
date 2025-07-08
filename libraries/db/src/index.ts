@@ -1,3 +1,3 @@
-export * from './connection.js';
-export * from './utils/index.js';
-export * from './types/index.js';
+export * from './connection';
+export * from './studio/index';
+export * from './users/index';

@@ -1,6 +1,5 @@
 export * from './user/index';
 export * from './projects/index';
-export * from './types/index';
 
 type HttpMethods =
 	| 'GET'
@@ -47,7 +46,19 @@ export default class RestClient {
 			...options
 		});
 
-		if (!req.ok) {
+		try {
+			var res;
+
+			if (req.headers.get('Content-Type')?.includes('application/json')) {
+				res = await req.json();
+			} else {
+				res = await req.text();
+			}
+		} catch (e) {
+			throw { error: true, code: -1, message: 'Parse error' };
+		}
+
+		if (!req.ok || res['error']) {
 			if (req.status == 301 && options?.refreshIfUnauthorized) {
 				await this.refreshToken();
 				return await this.request<T>(method, endpoint, {
@@ -55,15 +66,11 @@ export default class RestClient {
 					refreshIfUnauthorized: false
 				});
 			} else {
-				throw req;
+				throw res as { error: boolean; message?: string; code: number };
 			}
 		}
 
-		if (req.headers.get('Content-Type')?.includes('application/json')) {
-			return (await req.json()) as T;
-		} else {
-			return (await req.text()) as T;
-		}
+		return res;
 	}
 
 	public async refreshToken(): Promise<void> {

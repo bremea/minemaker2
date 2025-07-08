@@ -1,0 +1,11 @@
+{
+	"name": "@minemaker/types",
+	"version": "0.0.1",
+	"types": "./lib/index.ts",
+	"main": "./lib/index.ts",
+	"module": "./lib/index.ts",
+	"type": "module",
+	"dependencies": {
+		"mysql2": "^3.14.1"
+	}
+}

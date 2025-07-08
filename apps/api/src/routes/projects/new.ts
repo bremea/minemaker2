@@ -1,5 +1,5 @@
 import type { ElysiaApp } from '$src/app';
-import { createProject, getProject } from '@minemaker/db';
+import { createGame, getGame } from '@minemaker/db';
 import { t } from 'elysia';
 import { blockAuth } from 'lib/utils/auth';
 
@@ -8,9 +8,9 @@ export default (app: ElysiaApp) =>
 		'/',
 		async ({ uuid, body, snowflake }) => {
 			const id = snowflake.nextId().toString();
-			await createProject(id, uuid, body.name);
+			await createGame(id, uuid, body.name);
 
-			const project = await getProject(id.toString());
+			const project = await getGame(id.toString());
 			return project;
 		},
 		{

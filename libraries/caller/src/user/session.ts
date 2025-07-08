@@ -1,35 +1,69 @@
-export async function getAccessTokenFromCode(
-	apiUrl: string,
-	code: string
-): Promise<{ token: string; refreshToken: string }> {
-	const request = await fetch(`${apiUrl}/user/session/auth?code=${code}`);
+import RestClient from '..';
 
-	if (request.status != 200) {
-		throw await request.text();
-	}
+export async function login(
+	apiUrl: string,
+	email: string,
+	password: string
+): Promise<{ token: string; refreshToken: string }> {
+	const request = await fetch(`${apiUrl}/user/session/login`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			Accept: 'application/json'
+		},
+		body: JSON.stringify({
+			email,
+			password
+		})
+	});
 
 	try {
-		const response = await request.json();
-		return response;
+		var response = await request.json();
 	} catch (e) {
-		throw await request.text();
+		throw { error: true, code: request.status, message: await request.text() };
 	}
+
+	if (!request.ok || response['error']) {
+		throw response;
+	}
+
+	return response;
 }
 
-export async function staticTokenRefresh(
+export async function signup(
 	apiUrl: string,
-	token?: string
-): Promise<{ token: string }> {
-	const request = await fetch(`${apiUrl}/user/session/refresh`);
-
-	if (request.status != 200) {
-		throw await request.text();
-	}
+	email: string,
+	password: string
+): Promise<{ token: string; refreshToken: string }> {
+	const request = await fetch(`${apiUrl}/user/session/signup`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			Accept: 'application/json'
+		},
+		body: JSON.stringify({
+			email,
+			password
+		})
+	});
 
 	try {
-		const response = await request.json();
-		return response;
+		var response = await request.json();
 	} catch (e) {
-		throw await request.text();
+		throw { error: true, code: request.status, message: await request.text() };
 	}
+
+	if (!request.ok || response['error']) {
+		throw response;
+	}
+
+	return response;
+}
+
+export async function staticTokenRefresh(apiUrl: string): Promise<{ token: string }> {
+	const tempApiClient = new RestClient('temp', { apiUrl, refreshWithCookie: true });
+
+	const newToken = await tempApiClient.request<{ token: string }>('GET', 'user/session/refresh');
+
+	return newToken;
 }

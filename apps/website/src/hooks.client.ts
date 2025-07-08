@@ -4,16 +4,20 @@ import RestClient, { getMe, staticTokenRefresh } from '@minemaker/caller';
 import type { ClientInit } from '@sveltejs/kit';
 
 export const init: ClientInit = async () => {
-	const tokenFetch = await staticTokenRefresh(PUBLIC_API_URL);
-	const apiClient = new RestClient(tokenFetch.token, {
-		apiUrl: PUBLIC_API_URL,
-		refreshWithCookie: true
-	});
+	try {
+		const tokenFetch = await staticTokenRefresh(PUBLIC_API_URL);
+		const apiClient = new RestClient(tokenFetch.token, {
+			apiUrl: PUBLIC_API_URL,
+			refreshWithCookie: true
+		});
 
-	setApiClient(apiClient);
+		setApiClient(apiClient);
 
-	const me = await getMe(apiClient);
-	setUserState(me);
+		const me = await getMe(apiClient);
+		setUserState(me);
 
-	setLoggedIn(true);
+		setLoggedIn(true);
+	} catch (e) {
+		setLoggedIn(false);
+	}
 };

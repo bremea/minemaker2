@@ -1,5 +1,6 @@
-import { Elysia, t } from 'elysia';
+import { Elysia } from 'elysia';
 import { jwt, JWTPayloadSpec } from '@elysiajs/jwt';
+import { InternalApiError } from '@minemaker/types';
 
 export const blockAuth = new Elysia()
 	.use(
@@ -9,13 +10,13 @@ export const blockAuth = new Elysia()
 			exp: '1h'
 		})
 	)
-	.resolve({ as: 'scoped' }, async ({ headers, error, jwt }) => {
+	.resolve({ as: 'scoped' }, async ({ headers, jwt, set }) => {
 		const result = await checkToken(headers, jwt);
 
 		if (result.authenticated) {
 			return result;
 		} else {
-			return error(401, { error: true, code: 'UNAUTHORIZED' });
+			throw new InternalApiError(400, 'Unauthorized');
 		}
 	});
 
@@ -33,7 +34,7 @@ export const checkAuth = new Elysia()
 		return result;
 	});
 
-type AuthResult = { authenticated: true; uuid: string } | { authenticated: false; uuid: null };
+type AuthResult = { authenticated: true; id: string } | { authenticated: false; id: null };
 
 const checkToken = async (
 	headers: Record<string, string | undefined>,
@@ -45,7 +46,7 @@ const checkToken = async (
 	if (!headers.authorization || !headers.authorization.startsWith('Bearer ')) {
 		return {
 			authenticated: false,
-			uuid: null
+			id: null
 		};
 	}
 
@@ -55,12 +56,12 @@ const checkToken = async (
 	if (!userData) {
 		return {
 			authenticated: false,
-			uuid: null
+			id: null
 		};
 	}
 
 	return {
 		authenticated: true,
-		uuid: userData.uuid as string
+		id: userData.id as string
 	};
 };
