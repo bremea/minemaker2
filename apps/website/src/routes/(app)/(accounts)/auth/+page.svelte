@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { linkRequestOauth } from '@minemaker/caller';
+	import { confirmLink, linkRequestOauth } from '@minemaker/caller';
 	import { onMount } from 'svelte';
-	import { getApiClient, getLoggedIn, getUserState } from '$lib/state.svelte';
+	import { getApiClient, getLoggedIn, getUserState, setUserState } from '$lib/state.svelte';
 	import FluentArrowBidirectionalUpDown20Filled from '~icons/fluent/arrow-bidirectional-up-down-20-filled';
 	import type { PageProps } from './$types';
 	import type { ApiPlayer } from '@minemaker/types';
@@ -11,6 +11,7 @@
 	let { data }: PageProps = $props();
 
 	let loading = $state(true);
+	let buttonLoading = $state(false);
 	let error = $state('');
 	let player = $state<ApiPlayer | undefined>();
 	let me = getUserState();
@@ -35,11 +36,34 @@
 			}
 		}
 	});
+
+	async function onsubmit(event: SubmitEvent) {
+		event.preventDefault();
+
+		buttonLoading = true;
+
+		try {
+			const apiClient = getApiClient()!;
+
+			const newUserData = await confirmLink(apiClient, data.code!);
+
+			setUserState(newUserData);
+
+			goto('/');
+		} catch (e: any) {
+			loading = false;
+			if (e.message) {
+				error = e.message;
+			} else {
+				error = e.toString();
+			}
+		}
+	}
 </script>
 
 <main class="flex min-h-screen w-full justify-center p-12">
 	<div
-		class="flex min-h-[600px] h-min w-[800px] flex-col items-center justify-center space-y-8 rounded-lg bg-gray-700 p-12"
+		class="flex h-min min-h-[600px] w-[800px] flex-col items-center justify-center space-y-8 rounded-lg bg-gray-700 p-12"
 	>
 		{#if loading}
 			<Loader />
@@ -94,14 +118,15 @@
 						{player.username}
 					</span> with your Minemaker account.
 				</p>
-				<p class="text-xs opacity-50 text-center">
+				<p class="text-center text-xs opacity-50">
 					You can unlink your Minecraft account at any time in your account settings.
 				</p>
 			</div>
-			<div class="flex flex-col space-y-4 w-full items-center">
-				<Button class="w-[400px] flex justify-center font-bold">Link</Button>
-				<Button class="w-[400px] flex justify-center" color="darkgray">Cancel</Button>
-			</div>
+			<form class="flex w-full flex-col items-center space-y-4" {onsubmit}>
+				<Button class="flex w-[400px] justify-center font-bold" loading={buttonLoading}>
+					Link
+				</Button>
+			</form>
 		{/if}
 	</div>
 </main>

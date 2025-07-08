@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
+	import FluentErrorCircle20Filled from '~icons/fluent/error-circle-20-filled';
 
 	interface Props {
 		size: 'sm' | 'md' | 'lg' | 'xl';
@@ -20,11 +21,10 @@
 	let { children, componentSize = 'md', class: className, ...others }: InputProps = $props();
 </script>
 
-<div class="flex flex-col">
-	<div
-		class={`group relative flex h-min w-full items-center space-x-2 rounded-full ${sizeClasses[componentSize]} focus:border-mm-blue border-2 border-gray-600 bg-gray-900 text-nowrap outline-0 transition-all hover:border-gray-500 hover:shadow-lg focus:bg-gray-900 ${className}`}
-		{...others}
-	>
-		{@render children?.()}
-	</div>
+<div
+	class={`group relative flex h-min w-full items-center text-red-400 rounded-full ${sizeClasses[componentSize]} border-2 border-red-400 outline-0 ${className}`}
+	{...others}
+>
+	<FluentErrorCircle20Filled class="size-8 min-h-8 min-w-8 mr-2" />
+	{@render children?.()}
 </div>

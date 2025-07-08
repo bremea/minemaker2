@@ -9,4 +9,8 @@ export async function linkRequestOauth(client: RestClient, code: string): Promis
 	return await client.request<ApiPlayer>('GET', `user/link/oauth?code=${code}`);
 }
 
+export async function confirmLink(client: RestClient, code: string): Promise<ApiUser> {
+	return await client.request<ApiUser>('POST', `user/link`, { body: JSON.stringify({ code }) });
+}
+
 export * from './session';

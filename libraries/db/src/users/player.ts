@@ -9,9 +9,9 @@ export async function createPlayer(playerUUID: string, username: string): Promis
 	]);
 }
 
-/** Creates new player */
+/** Links Minecraft account to user account */
 export async function linkPlayer(accountId: string, uuid: string): Promise<void> {
-	await pool.query('UPDATE players SET mc_account = ? WHERE account_id = ?', [uuid, accountId]);
+	await pool.query('UPDATE users SET mc_account = ? WHERE account_id = ?', [uuid, accountId]);
 }
 
 /** Gets player via UUID */
@@ -63,4 +63,9 @@ export async function getLinkRequest(code: string): Promise<DatabaseLinkRequest>
 	}
 
 	return linkRequestData[0];
+}
+
+/** Delete link request */
+export async function deleteLinkRequest(code: string): Promise<void> {
+	await pool.query('DELETE FROM link_requests WHERE code = ?;', [code]);
 }

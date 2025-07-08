@@ -35,11 +35,11 @@
 <main class="flex w-full justify-center p-12">
 	<form class="w-[500px] space-y-8" {onsubmit}>
 		<div class="mb-8 flex flex-col space-y-2">
-			<ArrowLinkLeft size="sm" color="gray" href="/projects">Back</ArrowLinkLeft>
+			<ArrowLinkLeft size="sm" color="gray" href="/studio/projects">Back</ArrowLinkLeft>
 			<h1 class="text-3xl font-bold">New project</h1>
 		</div>
 		{#if error != ''}
-			<Error>{error}</Error>
+			<Error componentSize="sm">{error}</Error>
 		{/if}
 		<Input type="text" placeholder="My project" class="w-full" bind:value={name}>
 			Project name

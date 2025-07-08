@@ -27,7 +27,7 @@ export async function getUser(id: string): Promise<DatabaseUser> {
 /** Checks if user is verified */
 export async function checkUserVerified(id: string): Promise<boolean> {
 	const [userData] = await pool.query<DatabaseUser[]>(
-		'SELECT 1 FROM users WHERE id = ? AND mc_account IS NOT NULL;',
+		'SELECT 1 FROM users WHERE account_id = ? AND mc_account IS NOT NULL;',
 		[id]
 	);
 

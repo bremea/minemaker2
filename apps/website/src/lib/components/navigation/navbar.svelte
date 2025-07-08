@@ -15,6 +15,8 @@
 	let topNav: HTMLElement;
 
 	function clickOutside(node: HTMLElement) {
+		console.log(userState)
+
 		const handleClick = (event: MouseEvent) => {
 			if (!node.contains(event.target as Node) && sideNavOpen && event.target != topNav) {
 				sideNavOpen = false;
@@ -62,7 +64,7 @@
 				<a href={`/profile/${userState!.id}`} class="flex h-10 items-center">
 					<img
 						src={userState!.verified
-							? `https://mc-heads.net/avatar/${userState!.id.replace(/-/g, '')}`
+							? `https://mc-heads.net/avatar/${userState!.minecraftAccount.uuid.replace(/-/g, '')}`
 							: 'https://mc-heads.net/avatar/MHF_Steve'}
 						alt="Player head"
 						title={userState!.verified ? userState!.minecraftAccount.username : userState!.email}
@@ -119,7 +121,7 @@
 			{:else}
 				<img
 					src={userState!.verified
-						? `https://mc-heads.net/avatar/${userState!.id.replace(/-/g, '')}`
+						? `https://mc-heads.net/avatar/${userState!.minecraftAccount.uuid.replace(/-/g, '')}`
 						: 'https://mc-heads.net/avatar/MHF_Steve'}
 					alt="Player head"
 					title={userState!.verified ? userState!.minecraftAccount.username : userState!.email}
