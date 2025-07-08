@@ -4,6 +4,7 @@ import { jwt } from '@elysiajs/jwt';
 import { Snowyflake } from 'snowyflake';
 import { ip } from 'elysia-ip';
 import { InternalApiError } from '@minemaker/types';
+import { cors } from '@elysiajs/cors';
 
 const app = new Elysia()
 	.error({ InternalApiError })
@@ -28,6 +29,7 @@ const app = new Elysia()
 			}
 		}
 	})
+	.use(cors({ origin: '*' }))
 	.use(ip())
 	.use(
 		jwt({
