@@ -1,5 +1,5 @@
 import type { ElysiaApp } from '$src/app';
-import { createGame, getGame } from '@minemaker/db';
+import { createGame, getApiGame } from '@minemaker/db';
 import { t } from 'elysia';
 import { blockVerified } from 'lib/utils/auth';
 
@@ -10,7 +10,7 @@ export default (app: ElysiaApp) =>
 			const gameId = snowflake.nextId().toString();
 			await createGame(gameId, id, body.name);
 
-			const project = await getGame(gameId.toString());
+			const project = await getApiGame(gameId.toString());
 			return project;
 		},
 		{
