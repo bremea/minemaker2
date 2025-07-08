@@ -12,6 +12,7 @@ export type ApiUser = {
 	created: string;
 	lastLogin: string;
 	gems: number;
+	guest: false;
 } | {
 	id: string;
 	email: string;
@@ -20,6 +21,11 @@ export type ApiUser = {
 	created: string;
 	lastLogin: string;
 	gems: number;
+	guest: false;
+}
+
+export interface ApiGuest extends ApiPlayer {
+	guest: true
 }
 
 export interface ApiProfile {

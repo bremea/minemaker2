@@ -46,14 +46,27 @@
 				<img src="/gem.png" alt="Gem icon" class="h-10" />
 				<span class="font-bold">{userState!.gems}</span>
 			</div>-->
-			<a href={`/profile/${userState!.id}`} class="flex h-10 items-center">
-				<img
-					src={userState!.verified ? `https://mc-heads.net/avatar/${userState!.id.replace(/-/g, '')}` : 'https://mc-heads.net/avatar/0b612337-6e77-4267-9c17-911dc3b3d1f3'}
-					alt="Player head"
-					title={userState!.verified ? userState!.minecraftAccount.username : userState!.email}
-					class="h-8"
-				/>
-			</a>
+			{#if userState!.guest}
+				<a href={`/link`} class="flex h-10 items-center">
+					<img
+						src={`https://mc-heads.net/avatar/${userState!.uuid.replace(/-/g, '')}`}
+						alt="Player head"
+						title={userState!.username}
+						class="h-8"
+					/>
+				</a>
+			{:else}
+				<a href={`/profile/${userState!.id}`} class="flex h-10 items-center">
+					<img
+						src={userState!.verified
+							? `https://mc-heads.net/avatar/${userState!.id.replace(/-/g, '')}`
+							: 'https://mc-heads.net/avatar/0b612337-6e77-4267-9c17-911dc3b3d1f3'}
+						alt="Player head"
+						title={userState!.verified ? userState!.minecraftAccount.username : userState!.email}
+						class="h-8"
+					/>
+				</a>
+			{/if}
 		{:else}
 			<LinkButton color="darkgray" size="md" href="/login">Login</LinkButton>
 		{/if}

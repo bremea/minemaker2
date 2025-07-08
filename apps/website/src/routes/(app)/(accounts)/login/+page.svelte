@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { PUBLIC_API_URL } from '$env/static/public';
-	import { setApiClient, setUserState } from '$lib/state.svelte';
+	import { setApiClient, setLoggedIn, setUserState } from '$lib/state.svelte';
 	import RestClient, { getMe, login } from '@minemaker/caller';
 	import type { ApiError } from '@minemaker/types';
 	import { Button, Input, Error } from '@minemaker/ui';
@@ -32,10 +32,11 @@
 			const me = await getMe(apiClient);
 			setUserState(me);
 
+			setLoggedIn(true);
+
 			goto('/');
 		} catch (e: any) {
 			loading = false;
-			console.error(e)
 			if (e.message) {
 				error = e.message;
 			} else {

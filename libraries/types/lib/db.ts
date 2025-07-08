@@ -116,3 +116,10 @@ export interface DatabasePlayLog extends RowDataPacket {
 	game_id: string;
 	last_played: string;
 }
+
+export interface DatabaseLinkRequest extends RowDataPacket {
+	code: string;
+	account_id: string;
+	player_uuid: string;
+	expires: string;
+}

@@ -1,13 +1,17 @@
 import type { ElysiaApp } from '$src/app';
-import { createPlayer, getPlayer, linkPlayer } from '@minemaker/db';
+import { createLinkRequest, createPlayer, getPlayer, linkPlayer, playerExists } from '@minemaker/db';
 import { InternalApiError, ApiPlayer } from '@minemaker/types';
 import { t } from 'elysia';
 import { blockAuth } from 'lib/utils/auth';
 
 export default (app: ElysiaApp) =>
-	app.use(blockAuth).put(
+	app.use(blockAuth).get(
 		'/',
-		async ({ body, id }) => {
+		async ({ query, id }) => {
+			if (!query.code) {
+				throw new InternalApiError(400, 'Missing oauth code');
+			}
+
 			const accessTokenRequest = await fetch(
 				'https://login.microsoftonline.com/consumers/oauth2/v2.0/token',
 				{
@@ -15,7 +19,7 @@ export default (app: ElysiaApp) =>
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded'
 					},
-					body: `client_id=${process.env.MICROSOFT_CLIENT_ID}&scope=XboxLive.signin%20XboxLive.offline_access&code=${body.code}&redirect_uri=${process.env.MICROSOFT_CLIENT_REDIRECT_URI}&grant_type=authorization_code&client_secret=${process.env.MICROSOFT_CLIENT_SECRET}`
+					body: `client_id=${process.env.MICROSOFT_CLIENT_ID}&scope=XboxLive.signin%20XboxLive.offline_access&code=${query.code}&redirect_uri=${process.env.MICROSOFT_CLIENT_REDIRECT_URI}&grant_type=authorization_code&client_secret=${process.env.MICROSOFT_CLIENT_SECRET}`
 				}
 			);
 
@@ -26,6 +30,7 @@ export default (app: ElysiaApp) =>
 			}
 
 			if (accessTokenResponse['error'] != undefined) {
+				console.log(accessTokenResponse)
 				throw new InternalApiError(500, 'Xbox API returned an error');
 			}
 
@@ -144,9 +149,12 @@ export default (app: ElysiaApp) =>
 			const uuid = minecraftProfile['id'];
 			const username = minecraftProfile['name'];
 
-			await createPlayer(uuid, username);
-			await linkPlayer(id, uuid);
+			if (!(await playerExists(uuid))) {
+				await createPlayer(uuid, username);
+			}
+			//await linkPlayer(id, uuid);
 			const playerData = await getPlayer(uuid);
+			await createLinkRequest(query.code, id, uuid);
 
 			const player: ApiPlayer = {
 				uuid,

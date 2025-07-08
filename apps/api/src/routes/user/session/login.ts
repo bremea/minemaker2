@@ -49,6 +49,11 @@ export default (app: ElysiaApp) =>
 				exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30 // expires in 30 days
 			});
 
+			const newToken = await jwt.sign({
+				id: user.account_id,
+				exp: Math.floor(Date.now() / 1000) + 60 * 60 // expires in 1 hour
+			});
+
 			refresh.set({
 				httpOnly: true,
 				secure: !process.env.DEVELOPMENT_MODE,
@@ -57,10 +62,7 @@ export default (app: ElysiaApp) =>
 			});
 
 			return {
-				token: await jwt.sign({
-					id: user.account_id,
-					exp: Math.floor(Date.now() / 1000) + 60 * 60 // expires in 1 hour
-				}),
+				token: newToken,
 				refreshToken
 			};
 		},

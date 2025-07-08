@@ -1,7 +1,13 @@
 import { PUBLIC_API_URL } from '$env/static/public';
-import { setApiClient, setLoggedIn, setUserState } from '$lib/state.svelte';
+import {
+	getApiClient,
+	getLoggedIn,
+	setApiClient,
+	setLoggedIn,
+	setUserState
+} from '$lib/state.svelte';
 import RestClient, { getMe, staticTokenRefresh } from '@minemaker/caller';
-import type { ClientInit } from '@sveltejs/kit';
+import type { ClientInit, Handle, HandleFetch } from '@sveltejs/kit';
 
 export const init: ClientInit = async () => {
 	try {

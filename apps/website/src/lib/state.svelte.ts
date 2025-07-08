@@ -1,5 +1,5 @@
 import type RestClient from "@minemaker/caller";
-import type { ApiUser } from "@minemaker/types";
+import type { ApiGuest, ApiUser } from "@minemaker/types";
 
 let loggedIn: boolean = $state(false);
 
@@ -11,13 +11,13 @@ export function setLoggedIn(newValue: boolean) {
 	loggedIn = newValue;
 }
 
-let userState: ApiUser | undefined = $state();
+let userState: ApiUser | ApiGuest | undefined = $state();
 
-export function getUserState(): ApiUser | undefined {
+export function getUserState(): ApiUser | ApiGuest | undefined {
 	return userState;
 }
 
-export function setUserState(newValue: ApiUser) {
+export function setUserState(newValue: ApiUser | ApiGuest) {
 	userState = newValue;
 }
 

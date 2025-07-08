@@ -3,7 +3,7 @@ import RestClient, { getMe, staticTokenRefresh } from '@minemaker/caller';
 import type { LayoutLoad } from './$types';
 import { PUBLIC_API_URL } from '$env/static/public';
 import { redirect } from '@sveltejs/kit';
-import { browser } from '$app/environment'; 
+import { browser } from '$app/environment';
 
 export const load: LayoutLoad = async () => {
 	if (getLoggedIn() || !browser) return;
@@ -22,7 +22,7 @@ export const load: LayoutLoad = async () => {
 
 		setLoggedIn(true);
 
-		return {apiClient};
+		return { apiClient };
 	} catch (e) {
 		redirect(303, '/login');
 	}
