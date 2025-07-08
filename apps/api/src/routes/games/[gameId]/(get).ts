@@ -1,5 +1,5 @@
 import type { ElysiaApp } from '$src/app';
-import { getGame } from '@minemaker/db';
+import { getApiGame } from '@minemaker/db';
 import { InternalApiError } from '@minemaker/types';
 import { t } from 'elysia';
 import { checkAuth } from 'lib/utils/auth';
@@ -9,14 +9,14 @@ export default (app: ElysiaApp) =>
 	app.use(checkAuth).get(
 		'',
 		async ({ params: { gameId }, id, authenticated }) => {
-			const project = await getGame(gameId);
+			const game = await getApiGame(gameId);
 
-			if (project.public) {
-				return project;
+			if (game.public) {
+				return game;
 			}
 
-			if (!project.public && authenticated && project.owner === id) {
-				return project;
+			if (!game.public && authenticated && game.ownerId === id) {
+				return game;
 			} else {
 				throw new InternalApiError(400, 'Unauthorized');
 			}

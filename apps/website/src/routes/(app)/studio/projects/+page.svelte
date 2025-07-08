@@ -3,13 +3,14 @@
 	import UilWindows from '~icons/uil/windows';
 	import FluentAdd12Filled from '~icons/fluent/add-12-filled';
 	import { onMount } from 'svelte';
-	import { getUserProjects, type Project } from '@minemaker/caller';
+	import { getUserGames } from '@minemaker/caller';
 	import { getApiClient } from '$lib/state.svelte';
+	import type { ApiGame } from '@minemaker/types';
 
-	let projects: Project[] = $state([]);
+	let games: ApiGame[] = $state([]);
 
 	onMount(async () => {
-		projects = await getUserProjects(getApiClient()!);
+		games = await getUserGames(getApiClient()!);
 	});
 </script>
 
@@ -43,17 +44,17 @@
 				</div>
 				<p class="mt-1">New Project</p>
 			</a>
-			{#each projects as project}
+			{#each games as game}
 				<a
 					class="group m-4 flex w-[256px] cursor-pointer flex-col items-center justify-center text-center shadow-none"
-					href={`/studio/projects/${project.id}`}
+					href={`/studio/projects/${game.id}`}
 				>
 					<img
 						src="https://placehold.co/384x256"
 						class="group-hover:outline-mineblue outline-mm-blue flex h-[171px] w-[256px] items-center justify-center bg-gray-700 outline-0 outline-offset-2 transition-all duration-50 group-hover:rounded group-hover:outline-2 active:scale-95"
 						alt="Project icon"
 					/>
-					<p class="mt-1">{project.name}</p>
+					<p class="mt-1">{game.name}</p>
 				</a>
 			{/each}
 		</div>

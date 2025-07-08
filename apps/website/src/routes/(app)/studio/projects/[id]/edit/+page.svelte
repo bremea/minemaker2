@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getApiClient } from '$lib/state.svelte.js';
-	import { updateProject } from '@minemaker/caller';
-	import { Button, ImageUpload, Input, Radio, Tags, Textarea } from '@minemaker/ui';
+	import { updateGame } from '@minemaker/caller';
+	import { Button, ImageUpload, Input, Textarea } from '@minemaker/ui';
 
 	let { data } = $props();
 
@@ -21,7 +21,7 @@
 		if (description !== data.project?.description) newData.description = description;
 		if (isPublic !== data.project?.public) newData.public = isPublic;
 
-		const updatedData = await updateProject(getApiClient()!, data.id, newData);
+		const updatedData = await updateGame(getApiClient()!, data.id, newData);
 
 		loading = false;
 		data.project = updatedData;

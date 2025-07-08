@@ -1,5 +1,5 @@
 import type { ElysiaApp } from '$src/app';
-import { getGame, updateGame } from '@minemaker/db';
+import { getApiGame, getGame, updateGame } from '@minemaker/db';
 import { InternalApiError } from '@minemaker/types';
 import { t } from 'elysia';
 import { checkAuth } from 'lib/utils/auth';
@@ -18,7 +18,7 @@ export default (app: ElysiaApp) =>
 			const newData = { ...project, ...body };
 
 			await updateGame(id, newData.name, newData.description, newData.public);
-			return await getGame(id);
+			return await getApiGame(id);
 		},
 		{
 			params: t.Object({

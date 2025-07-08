@@ -1,5 +1,5 @@
 export * from './user/index';
-export * from './projects/index';
+export * from './games/index';
 
 type HttpMethods =
 	| 'GET'

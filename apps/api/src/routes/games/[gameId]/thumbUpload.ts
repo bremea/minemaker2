@@ -17,7 +17,7 @@ export default (app: ElysiaApp) =>
 		},
 		{
 			params: t.Object({
-				id: t.String()
+				gameId: t.String()
 			})
 		}
 	);

@@ -40,7 +40,8 @@ export interface ApiGame {
 	name: string;
 	description: string;
 	created: string;
-	tags: ApiTag[];
+	public: boolean;
+	tags: string[];
 }
 
 export interface ApiTag {
