@@ -16,11 +16,11 @@
 		"@tailwindcss/vite": "^4.1.11",
 		"@tauri-apps/api": "^2.6.0",
 		"@tauri-apps/plugin-opener": "^2.4.0",
+		"@minemaker/caller": "workspace:*",
 		"tailwindcss": "^4.1.11"
 	},
 	"devDependencies": {
 		"@iconify-json/fluent": "^1.2.26",
-		"@minemaker/caller": "workspace:*",
 		"@minemaker/types": "workspace:*",
 		"@minemaker/ui": "workspace:*",
 		"@sveltejs/adapter-static": "^3.0.8",

@@ -3,7 +3,7 @@
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import { setApiClient, setLoggedIn, setUserState } from '$lib/state.svelte';
 	import RestClient, { getMe, login } from '@minemaker/caller';
-	import { Button, Input, Error } from '@minemaker/ui';
+	import { Input, Error, ArrowButtonRight } from '@minemaker/ui';
 
 	let email = $state('');
 	let password = $state('');
@@ -45,8 +45,9 @@
 	}
 </script>
 
-<main class="flex w-full justify-center p-12">
+<main class="flex h-screen w-full items-center justify-center p-12">
 	<form class="w-[500px] space-y-8" {onsubmit}>
+		<img src="/studiologo.png" alt="Minemaker Studio logo" />
 		<div class="mb-8 flex flex-col space-y-2">
 			<h1 class="text-3xl font-bold">Login</h1>
 		</div>
@@ -56,7 +57,7 @@
 		<Input type="email" placeholder="..." class="w-full" bind:value={email}>Email Address</Input>
 		<Input type="password" placeholder="..." class="w-full" bind:value={password}>Password</Input>
 		<div class="flex w-full justify-end">
-			<Button {loading} type="submit">Create</Button>
+			<ArrowButtonRight {loading} type="submit">Login</ArrowButtonRight>
 		</div>
 	</form>
 </main>

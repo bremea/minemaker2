@@ -34,6 +34,13 @@ export default defineConfig({
 		watch: {
 			// 3. tell vite to ignore watching `src-tauri`
 			ignored: ['**/src-tauri/**']
+		},
+		fs: {
+			// Allow serving files from workspace root
+			allow: ['../..']
 		}
+	},
+	optimizeDeps: {
+		exclude: ['svelte-outside']
 	}
 });
