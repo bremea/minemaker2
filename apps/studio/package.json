@@ -13,21 +13,24 @@
 	},
 	"license": "MIT",
 	"dependencies": {
+		"@tailwindcss/vite": "^4.1.11",
 		"@tauri-apps/api": "^2.6.0",
-		"@tauri-apps/plugin-opener": "^2.4.0"
+		"@tauri-apps/plugin-opener": "^2.4.0",
+		"tailwindcss": "^4.1.11"
 	},
 	"devDependencies": {
+		"@iconify-json/fluent": "^1.2.26",
+		"@minemaker/caller": "workspace:*",
+		"@minemaker/types": "workspace:*",
+		"@minemaker/ui": "workspace:*",
 		"@sveltejs/adapter-static": "^3.0.8",
 		"@sveltejs/kit": "^2.22.2",
 		"@sveltejs/vite-plugin-svelte": "^5.1.0",
+		"@tauri-apps/cli": "^2.6.2",
 		"svelte": "^5.35.4",
 		"svelte-check": "^4.2.2",
 		"typescript": "~5.6.3",
-		"vite": "^6.3.5",
-		"@tauri-apps/cli": "^2.6.2",
 		"unplugin-icons": "^22.1.0",
-		"@minemaker/ui": "workspace:*",
-		"@minemaker/caller": "workspace:*",
-		"@minemaker/types": "workspace:*"
+		"vite": "^6.3.5"
 	}
 }
