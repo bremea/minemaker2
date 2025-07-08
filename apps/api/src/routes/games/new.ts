@@ -8,9 +8,9 @@ export default (app: ElysiaApp) =>
 		'/',
 		async ({ id, body, snowflake }) => {
 			const gameId = snowflake.nextId().toString();
-			await createGame(id, gameId, body.name);
+			await createGame(gameId, id, body.name);
 
-			const project = await getGame(id.toString());
+			const project = await getGame(gameId.toString());
 			return project;
 		},
 		{
