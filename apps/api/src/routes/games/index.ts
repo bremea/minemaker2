@@ -4,7 +4,7 @@ import { blockAuth } from 'lib/utils/auth';
 
 // get all user projects
 export default (app: ElysiaApp) =>
-	app.use(blockAuth).get('/', async ({ uuid }) => {
-		const projects = await getUserGames(uuid);
+	app.use(blockAuth).get('/', async ({ id }) => {
+		const projects = await getUserGames(id);
 		return projects;
 	});

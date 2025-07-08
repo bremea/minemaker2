@@ -1,6 +1,7 @@
 import { Elysia } from 'elysia';
 import { jwt, JWTPayloadSpec } from '@elysiajs/jwt';
 import { InternalApiError } from '@minemaker/types';
+import { checkUserVerified, getUser } from '@minemaker/db';
 
 export const blockAuth = new Elysia()
 	.use(
@@ -14,6 +15,30 @@ export const blockAuth = new Elysia()
 		const result = await checkToken(headers, jwt);
 
 		if (result.authenticated) {
+			return result;
+		} else {
+			throw new InternalApiError(400, 'Unauthorized');
+		}
+	});
+
+export const blockVerified = new Elysia()
+	.use(
+		jwt({
+			name: 'jwt',
+			secret: process.env.JWT_SECRET!,
+			exp: '1h'
+		})
+	)
+	.resolve({ as: 'scoped' }, async ({ headers, jwt, set }) => {
+		const result = await checkToken(headers, jwt);
+
+		if (result.authenticated) {
+			const userData = await checkUserVerified(result.id);
+
+			if (!userData) {
+				throw new InternalApiError(400, 'Your account is not verified. Go to minemaker.net/link to link your Minecraft account, then try again.');
+			}
+
 			return result;
 		} else {
 			throw new InternalApiError(400, 'Unauthorized');

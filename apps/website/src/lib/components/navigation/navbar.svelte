@@ -4,6 +4,9 @@
 
 	import FluentTextAlignJustify20Filled from '~icons/fluent/text-align-justify-20-filled';
 	import FluentDismiss20Filled from '~icons/fluent/dismiss-20-filled';
+	import FluentHome20Filled from '~icons/fluent/home-20-filled';
+	import FluentPaintBrush20Filled from '~icons/fluent/paint-brush-20-filled';
+	import FluentSettings20Filled from '~icons/fluent/settings-20-filled';
 
 	let userState = getUserState();
 	let loggedIn = getLoggedIn();
@@ -60,7 +63,7 @@
 					<img
 						src={userState!.verified
 							? `https://mc-heads.net/avatar/${userState!.id.replace(/-/g, '')}`
-							: 'https://mc-heads.net/avatar/0b612337-6e77-4267-9c17-911dc3b3d1f3'}
+							: 'https://mc-heads.net/avatar/MHF_Steve'}
 						alt="Player head"
 						title={userState!.verified ? userState!.minecraftAccount.username : userState!.email}
 						class="h-8"
@@ -98,16 +101,36 @@
 		use:clickOutside
 	>
 		<NavLink href="/">
-			<FluentDismiss20Filled class="h-6 w-6" />
+			<FluentHome20Filled class="h-6 w-6" />
 			<span>Home</span>
 		</NavLink>
 		<NavLink href="/studio/projects">
-			<FluentDismiss20Filled class="h-6 w-6" />
+			<FluentPaintBrush20Filled class="h-6 w-6" />
 			<span>Studio</span>
 		</NavLink>
 		<NavLink href="/profile">
-			<FluentDismiss20Filled class="h-6 w-6" />
+			{#if userState!.guest}
+				<img
+					src={`https://mc-heads.net/avatar/${userState!.uuid.replace(/-/g, '')}`}
+					alt="Player head"
+					title={userState!.username}
+					class="h-6"
+				/>
+			{:else}
+				<img
+					src={userState!.verified
+						? `https://mc-heads.net/avatar/${userState!.id.replace(/-/g, '')}`
+						: 'https://mc-heads.net/avatar/MHF_Steve'}
+					alt="Player head"
+					title={userState!.verified ? userState!.minecraftAccount.username : userState!.email}
+					class="h-6"
+				/>
+			{/if}
 			<span>Profile</span>
+		</NavLink>
+		<NavLink href="/settings">
+			<FluentSettings20Filled class="h-6 w-6" />
+			<span>Settings</span>
 		</NavLink>
 	</nav>
 {/if}

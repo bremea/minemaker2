@@ -24,6 +24,16 @@ export async function getUser(id: string): Promise<DatabaseUser> {
 	return userData[0];
 }
 
+/** Checks if user is verified */
+export async function checkUserVerified(id: string): Promise<boolean> {
+	const [userData] = await pool.query<DatabaseUser[]>(
+		'SELECT 1 FROM users WHERE id = ? AND mc_account IS NOT NULL;',
+		[id]
+	);
+
+	return userData.length > 0;
+}
+
 /** Gets user and its player data via UUID */
 export async function getUserAndPlayerData(
 	id: string
