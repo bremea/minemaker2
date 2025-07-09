@@ -1,13 +1,11 @@
 {
-  "name": "realtime",
-  "module": "index.ts",
-  "type": "module",
-  "devDependencies": {
-    "@iconify-json/fluent": "^1.2.15",
-    "@types/bun": "latest",
-    "unplugin-icons": "^22.1.0"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  }
+	"name": "@minemaker/realtime",
+	"module": "src/index.ts",
+	"type": "module",
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	}
 }

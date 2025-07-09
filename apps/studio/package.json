@@ -16,6 +16,7 @@
 		"@minemaker/caller": "workspace:*",
 		"@tailwindcss/vite": "^4.1.11",
 		"@tauri-apps/api": "^2.6.0",
+		"@tauri-apps/plugin-fs": "^2.4.0",
 		"@tauri-apps/plugin-opener": "^2.4.0",
 		"@tauri-apps/plugin-store": "~2",
 		"tailwindcss": "^4.1.11"
