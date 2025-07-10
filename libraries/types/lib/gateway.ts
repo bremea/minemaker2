@@ -1,7 +1,17 @@
+export enum GatewayOpCodes {
+	DISPATCH = 0,
+	HEARTBEAT = 1,
+	HEARTBEAT_ACK = 2,
+	HELLO = 3,
+	IDENTIFY = 4,
+	READY = 5,
+	RESUME = 6
+}
+
 export type GatewayDispatchEventTypes = 'message' | 'friendRequest';
 
 export interface GatewayEvent<T = unknown> {
-	op: number;
+	op: GatewayOpCodes;
 	d?: T;
 	s?: number;
 	t?: string;
@@ -9,7 +19,7 @@ export interface GatewayEvent<T = unknown> {
 
 export interface GatewayDispatchEvent<T, E extends GatewayDispatchEventTypes>
 	extends GatewayEvent<T> {
-	op: 0;
+	op: GatewayOpCodes.DISPATCH;
 	d: T;
 	s: number;
 	t: E;
@@ -26,7 +36,7 @@ export type GatewayHelloEventData = {
 };
 
 export interface GatewayHelloEvent extends GatewayEvent<GatewayHelloEventData> {
-	op: 3;
+	op: GatewayOpCodes.HELLO;
 }
 
 /** Client properties */
@@ -42,28 +52,29 @@ export type GatewayIdentifyEventData = {
 };
 
 export interface GatewayIdentifySendEvent extends GatewaySendEvent<GatewayIdentifyEventData> {
-	op: 4;
+	op: GatewayOpCodes.IDENTIFY;
 }
 
 /** Heartbeat Send - d should be last sequence number received (or null if none yet) */
 export type GatewayHeartbeatEventData = number | null;
 
 export interface GatewayHeartbeatSendEvent extends GatewaySendEvent<GatewayHeartbeatEventData> {
-	op: 1;
+	op: GatewayOpCodes.HEARTBEAT;
 }
 
 /** Heartbeat Ack */
 export interface GatewayHeartbeatAckEvent extends GatewayEvent<undefined> {
-	op: 2;
+	op: GatewayOpCodes.HEARTBEAT_ACK;
 }
 
 /** Ready Event (receive) */
 export type GatewayReadyEventData = {
 	sessionId: string;
+	reconnectUrl: string;
 };
 
 export interface GatewayReadyEvent extends GatewayEvent<GatewayReadyEventData> {
-	op: 5;
+	op: GatewayOpCodes.READY;
 }
 
 /** Message Event (receive) */

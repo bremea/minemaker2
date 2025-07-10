@@ -1,6 +1,8 @@
-import { GatewayConnection } from './lib/connection';
+import { connect } from '@nats-io/transport-node';
+import { GatewaySession } from './lib/session';
+import { jetstream, jetstreamManager } from '@nats-io/jetstream';
 
-const connections: Map<string, GatewayConnection> = new Map();
+const connections: Map<string, GatewaySession> = new Map();
 
 const server = Bun.serve<{ id: string }, any>({
 	port: 4000,
@@ -13,7 +15,11 @@ const server = Bun.serve<{ id: string }, any>({
 	},
 	websocket: {
 		async open(ws) {
-			const connection = new GatewayConnection(ws);
+			const natsConnection = await connect();
+			const jsm = await jetstreamManager(natsConnection);
+			const js = jetstream(natsConnection);
+
+			const connection = new GatewaySession(ws, js, jsm, '127.0.0.1');
 			connections.set(ws.data.id, connection);
 			connection.open();
 		},

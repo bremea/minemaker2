@@ -16,6 +16,8 @@
 	"dependencies": {
 		"@minemaker/realtime": "workspace:*",
 		"@minemaker/db": "workspace:*",
+		"@nats-io/jetstream": "^3.1.0",
+		"@nats-io/transport-node": "^3.1.0",
 		"jose": "^6.0.11"
 	}
 }
