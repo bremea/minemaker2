@@ -33,13 +33,64 @@ export const blockVerified = new Elysia()
 		const result = await checkToken(headers, jwt);
 
 		if (result.authenticated) {
-			const userData = await checkUserVerified(result.id);
-
-			if (!userData) {
-				throw new InternalApiError(400, 'Your account is not verified. Go to minemaker.net/link to link your Minecraft account, then try again.');
+			if (result.uuid == undefined || result.id == undefined) {
+				throw new InternalApiError(
+					400,
+					'Your account is not verified. Go to minemaker.net/link to link your Minecraft account, then try again.'
+				);
 			}
 
-			return result;
+			return result as { authenticated: true; uuid: string; id: string };
+		} else {
+			throw new InternalApiError(400, 'Unauthorized');
+		}
+	});
+
+export const blockGuest = new Elysia()
+	.use(
+		jwt({
+			name: 'jwt',
+			secret: process.env.JWT_SECRET!,
+			exp: '1h'
+		})
+	)
+	.resolve({ as: 'scoped' }, async ({ headers, jwt, set }) => {
+		const result = await checkToken(headers, jwt);
+
+		if (result.authenticated) {
+			if (result.uuid != undefined && result.id == undefined) {
+				throw new InternalApiError(
+					400,
+					'Your account is not verified. Go to minemaker.net/link to link your Minecraft account, then try again.'
+				);
+			}
+
+			return result as { authenticated: true; uuid?: string; id: string };
+		} else {
+			throw new InternalApiError(400, 'Unauthorized');
+		}
+	});
+
+export const blockNonGuest = new Elysia()
+	.use(
+		jwt({
+			name: 'jwt',
+			secret: process.env.JWT_SECRET!,
+			exp: '1h'
+		})
+	)
+	.resolve({ as: 'scoped' }, async ({ headers, jwt, set }) => {
+		const result = await checkToken(headers, jwt);
+
+		if (result.authenticated) {
+			if (result.uuid == undefined) {
+				throw new InternalApiError(
+					400,
+					'Your account is not verified. Go to minemaker.net/link to link your Minecraft account, then try again.'
+				);
+			}
+
+			return result as { authenticated: true; uuid: string; id?: string };
 		} else {
 			throw new InternalApiError(400, 'Unauthorized');
 		}
@@ -54,12 +105,16 @@ export const checkAuth = new Elysia()
 		})
 	)
 	.resolve({ as: 'scoped' }, async ({ headers, jwt }) => {
-		const result = await checkToken(headers, jwt);
-
-		return result;
+		return { auth: await checkToken(headers, jwt) };
 	});
 
-type AuthResult = { authenticated: true; id: string } | { authenticated: false; id: null };
+type AuthResult =
+	| { authenticated: false }
+	| {
+			authenticated: true;
+			id?: string;
+			uuid?: string;
+	  };
 
 const checkToken = async (
 	headers: Record<string, string | undefined>,
@@ -70,8 +125,7 @@ const checkToken = async (
 ): Promise<AuthResult> => {
 	if (!headers.authorization || !headers.authorization.startsWith('Bearer ')) {
 		return {
-			authenticated: false,
-			id: null
+			authenticated: false
 		};
 	}
 
@@ -80,13 +134,13 @@ const checkToken = async (
 
 	if (!userData) {
 		return {
-			authenticated: false,
-			id: null
+			authenticated: false
 		};
 	}
 
 	return {
 		authenticated: true,
-		id: userData.id as string
+		uuid: userData.uuid,
+		id: userData.id
 	};
 };

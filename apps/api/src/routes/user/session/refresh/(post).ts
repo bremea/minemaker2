@@ -1,5 +1,5 @@
 import type { ElysiaApp } from '$src/app';
-import { createSession, getSession, invalidateSession, updateTrustedIpLogin } from '@minemaker/db';
+import { createSession, getSession, getUser, invalidateSession, updateTrustedIpLogin } from '@minemaker/db';
 import { InternalApiError } from '@minemaker/types';
 import { t } from 'elysia';
 
@@ -39,10 +39,22 @@ export default (app: ElysiaApp) =>
 				exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30 // expires in 30 days
 			});
 
-			const newToken = await jwt.sign({
-				id: sessionData.account_id,
-				exp: Math.floor(Date.now() / 1000) + 60 * 60 // expires in 1 hour
-			});
+			const user = await getUser(sessionData.account_id);
+
+			let newToken: string | null;
+
+			if (user.mc_account == null) {
+				newToken = await jwt.sign({
+					id: user.account_id,
+					exp: Math.floor(Date.now() / 1000) + 60 * 60 // expires in 1 hour
+				});
+			} else {
+				newToken = await jwt.sign({
+					id: user.account_id,
+					uuid: user.mc_account,
+					exp: Math.floor(Date.now() / 1000) + 60 * 60 // expires in 1 hour
+				});
+			}
 
 			return {
 				token: newToken,

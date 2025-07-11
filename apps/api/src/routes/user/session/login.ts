@@ -24,6 +24,7 @@ export default (app: ElysiaApp) =>
 			try {
 				var user = await getUserByEmail(body.email);
 			} catch (e) {
+				console.error(e);
 				throw new InternalApiError(400, 'Incorrect email or password');
 			}
 
@@ -49,10 +50,20 @@ export default (app: ElysiaApp) =>
 				exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30 // expires in 30 days
 			});
 
-			const newToken = await jwt.sign({
-				id: user.account_id,
-				exp: Math.floor(Date.now() / 1000) + 60 * 60 // expires in 1 hour
-			});
+			let newToken: string | null;
+
+			if (user.mc_account == null) {
+				newToken = await jwt.sign({
+					id: user.account_id,
+					exp: Math.floor(Date.now() / 1000) + 60 * 60 // expires in 1 hour
+				});
+			} else {
+				newToken = await jwt.sign({
+					id: user.account_id,
+					uuid: user.mc_account,
+					exp: Math.floor(Date.now() / 1000) + 60 * 60 // expires in 1 hour
+				});
+			}
 
 			refresh.set({
 				httpOnly: true,
