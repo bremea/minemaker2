@@ -54,9 +54,9 @@
 			{#if userState!.guest}
 				<a href={`/link`} class="flex h-10 items-center">
 					<img
-						src={`https://mc-heads.net/avatar/${userState!.uuid.replace(/-/g, '')}`}
+						src={`https://mc-heads.net/avatar/${userState!.player.uuid.replace(/-/g, '')}`}
 						alt="Player head"
-						title={userState!.username}
+						title={userState!.player.username}
 						class="h-8"
 					/>
 				</a>
@@ -64,10 +64,10 @@
 				<a href={`/profile/${userState!.id}`} class="flex h-10 items-center">
 					<img
 						src={userState!.verified
-							? `https://mc-heads.net/avatar/${userState!.minecraftAccount.uuid.replace(/-/g, '')}`
+							? `https://mc-heads.net/avatar/${userState!.player.uuid.replace(/-/g, '')}`
 							: 'https://mc-heads.net/avatar/MHF_Steve'}
 						alt="Player head"
-						title={userState!.verified ? userState!.minecraftAccount.username : userState!.email}
+						title={userState!.verified ? userState!.player.username : userState!.email}
 						class="h-8"
 					/>
 				</a>
@@ -113,18 +113,18 @@
 		<NavLink href="/profile">
 			{#if userState!.guest}
 				<img
-					src={`https://mc-heads.net/avatar/${userState!.uuid.replace(/-/g, '')}`}
+					src={`https://mc-heads.net/avatar/${userState!.player.uuid.replace(/-/g, '')}`}
 					alt="Player head"
-					title={userState!.username}
+					title={userState!.player.username}
 					class="h-6"
 				/>
 			{:else}
 				<img
 					src={userState!.verified
-						? `https://mc-heads.net/avatar/${userState!.minecraftAccount.uuid.replace(/-/g, '')}`
+						? `https://mc-heads.net/avatar/${userState!.player.uuid.replace(/-/g, '')}`
 						: 'https://mc-heads.net/avatar/MHF_Steve'}
 					alt="Player head"
-					title={userState!.verified ? userState!.minecraftAccount.username : userState!.email}
+					title={userState!.verified ? userState!.player.username : userState!.email}
 					class="h-6"
 				/>
 			{/if}

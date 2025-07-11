@@ -14,3 +14,4 @@ export async function confirmLink(client: RestClient, code: string): Promise<Api
 }
 
 export * from './session';
+export * from './player';

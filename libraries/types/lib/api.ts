@@ -5,28 +5,33 @@ export interface ApiPlayer {
 	lastLogin: string;
 }
 
-export type ApiUser = {
-	id: string;
-	email: string;
-	verified: false;
-	created: string;
-	lastLogin: string;
-	gems: number;
-	guest: false;
-} | {
-	id: string;
-	email: string;
-	verified: true;
-	minecraftAccount: ApiPlayer;
-	created: string;
-	lastLogin: string;
-	gems: number;
-	guest: false;
-}
-
-export interface ApiGuest extends ApiPlayer {
-	guest: true
-}
+export type ApiUser =
+	| {
+			// not verified
+			id: string;
+			email: string;
+			verified: false;
+			created: string;
+			lastLogin: string;
+			gems: number;
+			guest: false;
+	  }
+	| {
+			// verified
+			id: string;
+			email: string;
+			verified: true;
+			player: ApiPlayer;
+			created: string;
+			lastLogin: string;
+			gems: number;
+			guest: false;
+	  }
+	| {
+			// guests
+			player: ApiPlayer;
+			guest: true;
+	  };
 
 export interface ApiProfile {
 	id: string;
@@ -50,3 +55,10 @@ export interface ApiTag {
 }
 
 export type ApiError = { error: boolean; code: number; message?: string };
+
+export type ApiPlaylog = Array<ApiPlaylogEntry>;
+
+export interface ApiPlaylogEntry {
+	game: ApiGame;
+	lastPlayed: string;
+}

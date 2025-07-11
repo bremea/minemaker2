@@ -18,7 +18,7 @@ export const getApiUser = async (id: string): Promise<ApiUser> => {
 		apiUser = {
 			...apiUser,
 			verified: true,
-			minecraftAccount: {
+			player: {
 				uuid: player.player_uuid,
 				username: player.username,
 				created: player.created_at,

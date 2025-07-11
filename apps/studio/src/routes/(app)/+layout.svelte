@@ -49,10 +49,10 @@
 	<div class="flex h-full w-10 items-center justify-center">
 		<img
 			src={userState!.verified
-				? `https://mc-heads.net/avatar/${userState!.minecraftAccount.uuid.replace(/-/g, '')}`
+				? `https://mc-heads.net/avatar/${userState!.player.uuid.replace(/-/g, '')}`
 				: 'https://mc-heads.net/avatar/MHF_Steve'}
 			alt="Player head"
-			title={userState!.verified ? userState!.minecraftAccount.username : userState!.email}
+			title={userState!.verified ? userState!.player.username : userState!.email}
 			class="h-8"
 		/>
 	</div>
