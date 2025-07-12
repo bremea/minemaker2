@@ -1,12 +1,16 @@
 {
-  "name": "hypervisor",
-  "module": "index.ts",
-  "type": "module",
-  "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  }
+	"name": "hypervisor",
+	"module": "src/index.ts",
+	"type": "module",
+	"private": true,
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"dependencies": {
+		"@minemaker/realtime": "workspace:*",
+		"@minemaker/types": "workspace:*"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	}
 }
