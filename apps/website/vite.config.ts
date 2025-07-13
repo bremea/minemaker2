@@ -13,7 +13,10 @@ export default defineConfig({
 	],
 	server: {
 		proxy: {
-			'/api': process.env.API_URL!
+			'/api': {
+				target: process.env.API_URL!,
+				changeOrigin: true
+			}
 		}
 	},
 	optimizeDeps: {

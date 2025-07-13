@@ -1,11 +1,11 @@
 import type { ElysiaApp } from '$src/app';
 import { createGame } from '@minemaker/db';
 import { t } from 'elysia';
-import { blockVerified } from 'lib/utils/auth';
+import { verifiedUsersOnly } from 'lib/utils/auth';
 import { getApiGame } from 'lib/utils/game';
 
 export default (app: ElysiaApp) =>
-	app.use(blockVerified).post(
+	app.use(verifiedUsersOnly).post(
 		'/',
 		async ({ id, body, snowflake }) => {
 			const gameId = snowflake.nextId().toString();

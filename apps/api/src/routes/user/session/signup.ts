@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 export default (app: ElysiaApp) =>
 	app.post(
 		'/',
-		async ({ cookie: { refresh }, jwt, ip, snowflake, body, headers }) => {
+		async ({ cookie: { refresh, token }, jwt, ip, snowflake, body, headers }) => {
 			if (await userExists(body.email)) {
 				throw new InternalApiError(400, 'Email already in use');
 			}
@@ -39,9 +39,17 @@ export default (app: ElysiaApp) =>
 			refresh.set({
 				httpOnly: true,
 				secure: !process.env.DEVELOPMENT_MODE,
-				path: '/api/user/session/refresh',
+				path: body.setCookie ? '/' : '/api/user/session/refresh',
 				value: refreshToken
 			});
+
+			if (body.setCookie) {
+				token.set({
+					httpOnly: true,
+					secure: !process.env.DEVELOPMENT_MODE,
+					value: newToken
+				});
+			}
 
 			return {
 				token: newToken,
@@ -60,7 +68,8 @@ export default (app: ElysiaApp) =>
 					minLength: 8,
 					error: 'Invalid password',
 					pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\s]).{8,200}$'
-				})
+				}),
+				setCookie: t.Optional(t.Boolean())
 			})
 		}
 	);

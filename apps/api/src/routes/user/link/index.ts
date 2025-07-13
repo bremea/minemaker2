@@ -2,11 +2,11 @@ import type { ElysiaApp } from '$src/app';
 import { getLinkRequest, deleteLinkRequest, linkPlayer } from '@minemaker/db';
 import { InternalApiError } from '@minemaker/types';
 import { t } from 'elysia';
-import { blockAuth } from 'lib/utils/auth';
+import { authenticatedUsersOnly } from 'lib/utils/auth';
 import { getApiUser } from 'lib/utils/user';
 
 export default (app: ElysiaApp) =>
-	app.use(blockAuth).post(
+	app.use(authenticatedUsersOnly).post(
 		'/',
 		async ({ id, body }) => {
 			const linkRequest = await getLinkRequest(body.code);

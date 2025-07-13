@@ -3,7 +3,8 @@ import RestClient from '..';
 export async function login(
 	apiUrl: string,
 	email: string,
-	password: string
+	password: string,
+	setCookie: boolean = false
 ): Promise<{ token: string; refreshToken: string }> {
 	const request = await fetch(`${apiUrl}/user/session/login`, {
 		method: 'POST',
@@ -13,7 +14,8 @@ export async function login(
 		},
 		body: JSON.stringify({
 			email,
-			password
+			password,
+			setCookie
 		})
 	});
 

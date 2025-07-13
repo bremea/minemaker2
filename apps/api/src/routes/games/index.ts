@@ -1,6 +1,6 @@
 import type { ElysiaApp } from '$src/app';
 import { getMostPopularGames } from '@minemaker/db';
-import { blockAuth, blockVerified } from 'lib/utils/auth';
+import { authenticatedUsersOnly, verifiedUsersOnly } from 'lib/utils/auth';
 import { getUserApiGames } from 'lib/utils/game';
 
 // get all user projects
@@ -10,7 +10,7 @@ export default (app: ElysiaApp) =>
 			const projects = await getMostPopularGames();
 			return projects;
 		})
-		.use(blockVerified)
+		.use(verifiedUsersOnly)
 		.get('/', async ({ id }) => {
 			const projects = await getUserApiGames(id);
 			return projects;

@@ -2,11 +2,11 @@ import type { ElysiaApp } from '$src/app';
 import { getGame, deleteGame, updateGame } from '@minemaker/db';
 import { InternalApiError } from '@minemaker/types';
 import { t } from 'elysia';
-import { blockAuth } from 'lib/utils/auth';
+import { authenticatedUsersOnly } from 'lib/utils/auth';
 
 // get thumbnail upload link for this project
 export default (app: ElysiaApp) =>
-	app.use(blockAuth).get(
+	app.use(authenticatedUsersOnly).get(
 		'',
 		async ({ params: { gameId }, id, authenticated }) => {
 			const project = await getGame(gameId);

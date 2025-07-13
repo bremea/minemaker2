@@ -10,6 +10,7 @@ import RestClient, { getMe, staticTokenRefresh } from '@minemaker/caller';
 import type { ClientInit, Handle, HandleFetch } from '@sveltejs/kit';
 
 export const init: ClientInit = async () => {
+	/*
 	try {
 		const tokenFetch = await staticTokenRefresh(PUBLIC_API_URL);
 		const apiClient = new RestClient(tokenFetch.token, {
@@ -25,5 +26,5 @@ export const init: ClientInit = async () => {
 		setLoggedIn(true);
 	} catch (e) {
 		setLoggedIn(false);
-	}
+	}*/
 };

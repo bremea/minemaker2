@@ -15,6 +15,7 @@ type HttpMethods =
 interface ClientOptions {
 	apiUrl: string;
 	refreshWithCookie: boolean;
+	useCookieAuth?: boolean;
 }
 
 interface RequestOptions extends BunFetchRequestInit {
@@ -26,7 +27,7 @@ export default class RestClient {
 	public options: ClientOptions;
 
 	constructor(token: string, options: ClientOptions) {
-		if (!token) throw new Error('No token provided');
+		if (!token && !options.useCookieAuth) throw new Error('No token provided');
 		this.authorization = `Bearer ${token}`;
 		this.options = options;
 	}
@@ -36,13 +37,18 @@ export default class RestClient {
 		endpoint: string,
 		options?: RequestOptions
 	): Promise<T> {
+		const headers: HeadersInit = {
+			'Content-Type': 'application/json',
+			...options?.headers
+		} as Record<string, string>;
+
+		if (!this.options.useCookieAuth) {
+			headers.Authorization = this.authorization;
+		}
+
 		const req = await fetch(`${this.options.apiUrl}/${endpoint}`, {
 			method,
-			headers: {
-				Authorization: this.authorization,
-				'Content-Type': 'application/json',
-				...options?.headers
-			},
+			headers,
 			...options
 		});
 
@@ -59,8 +65,8 @@ export default class RestClient {
 		}
 
 		if (!req.ok || res['error']) {
-			if (req.status == 301 && options?.refreshIfUnauthorized) {
-				await this.refreshToken();
+			if (options?.refreshIfUnauthorized) {
+				await this.refreshToken(this.options.useCookieAuth ?? false);
 				return await this.request<T>(method, endpoint, {
 					...options,
 					refreshIfUnauthorized: false
@@ -73,8 +79,11 @@ export default class RestClient {
 		return res;
 	}
 
-	public async refreshToken(): Promise<void> {
-		const newToken = await this.request<{ token: string }>('GET', '/api/user/session/refresh');
+	public async refreshToken(useCookieAuth: boolean = false): Promise<void> {
+		const newToken = await this.request<{ token: string }>(
+			'GET',
+			`/api/user/session/refresh${useCookieAuth ? '?setCookie=true' : ''}`
+		);
 		this.authorization = `Bearer ${newToken.token}`;
 	}
 }

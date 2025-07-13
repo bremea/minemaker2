@@ -16,7 +16,7 @@ import bcrypt from 'bcrypt';
 export default (app: ElysiaApp) =>
 	app.post(
 		'/',
-		async ({ cookie: { refresh }, jwt, ip, snowflake, headers, body }) => {
+		async ({ cookie: { refresh, token }, jwt, ip, snowflake, headers, body }) => {
 			if (ip === '::1' || ip === '::ffff:127.0.0.1') {
 				ip = '127.0.0.1';
 			}
@@ -68,9 +68,17 @@ export default (app: ElysiaApp) =>
 			refresh.set({
 				httpOnly: true,
 				secure: !process.env.DEVELOPMENT_MODE,
-				path: '/api/user/session/refresh',
+				path: body.setCookie ? '/' : '/api/user/session/refresh',
 				value: refreshToken
 			});
+
+			if (body.setCookie) {
+				token.set({
+					httpOnly: true,
+					secure: !process.env.DEVELOPMENT_MODE,
+					value: newToken
+				});
+			}
 
 			return {
 				token: newToken,
@@ -87,7 +95,8 @@ export default (app: ElysiaApp) =>
 				password: t.String({
 					maxLength: 200,
 					error: 'Invalid password'
-				})
+				}),
+				setCookie: t.Optional(t.Boolean())
 			})
 		}
 	);

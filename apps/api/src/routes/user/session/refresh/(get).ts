@@ -9,7 +9,7 @@ import {
 import { InternalApiError } from '@minemaker/types';
 
 export default (app: ElysiaApp) =>
-	app.get('/', async ({ cookie: { refresh }, jwt, snowflake, headers, ip }) => {
+	app.get('/', async ({ cookie: { refresh, token }, query, jwt, snowflake, headers, ip }) => {
 		if (ip === '::1' || ip === '::ffff:127.0.0.1') {
 			ip = '127.0.0.1';
 		}
@@ -62,9 +62,17 @@ export default (app: ElysiaApp) =>
 		refresh.set({
 			httpOnly: true,
 			secure: !process.env.DEVELOPMENT_MODE,
-			path: '/api/user/session/refresh',
+			path: query.setCookie == 'true' ? '/' : '/api/user/session/refresh',
 			value: refreshToken
 		});
+
+		if (query.setCookie == 'true') {
+			token.set({
+				httpOnly: true,
+				secure: !process.env.DEVELOPMENT_MODE,
+				value: newToken
+			});
+		}
 
 		return {
 			token: newToken,

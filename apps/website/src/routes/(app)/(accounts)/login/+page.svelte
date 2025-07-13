@@ -20,19 +20,7 @@
 		loading = true;
 
 		try {
-			const tokenData = await login(PUBLIC_API_URL, email, password);
-
-			const apiClient = new RestClient(tokenData.token, {
-				apiUrl: PUBLIC_API_URL,
-				refreshWithCookie: true
-			});
-
-			setApiClient(apiClient);
-
-			const me = await getMe(apiClient);
-			setUserState(me);
-
-			setLoggedIn(true);
+			await login(PUBLIC_API_URL, email, password, true);
 
 			goto('/');
 		} catch (e: any) {

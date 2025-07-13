@@ -8,10 +8,10 @@ import {
 } from '@minemaker/db';
 import { InternalApiError, ApiPlayer } from '@minemaker/types';
 import { t } from 'elysia';
-import { blockAuth, blockNonGuest } from 'lib/utils/auth';
+import { authenticatedUsersOnly, blockNonGuest } from 'lib/utils/auth';
 
 export default (app: ElysiaApp) =>
-	app.use(blockAuth).get(
+	app.use(authenticatedUsersOnly).get(
 		'/',
 		async ({ query, id }) => {
 			if (!id) {
