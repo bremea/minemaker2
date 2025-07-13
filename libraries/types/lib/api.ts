@@ -49,7 +49,7 @@ export interface ApiGame {
 	created: string;
 	public: boolean;
 	online: number;
-	tags: string[];
+	tags?: string[];
 }
 
 export interface ApiTag {

@@ -1,5 +1,7 @@
 import type { RowDataPacket } from 'mysql2';
 
+export type Join<A, B> = A & B;
+
 export interface DatabasePlayer extends RowDataPacket {
 	player_uuid: string;
 	username: string;

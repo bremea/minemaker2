@@ -1,5 +1,5 @@
 import { pool } from '$src/connection';
-import { DatabaseGame, DatabasePlayerCount } from '@minemaker/types';
+import { DatabaseGame, DatabasePlayerCount, Join } from '@minemaker/types';
 import { RowDataPacket } from 'mysql2';
 
 /** Creates new game */
@@ -40,36 +40,30 @@ export async function getUserGames(ownerId: string): Promise<DatabaseGame[]> {
 	return games;
 }
 
-/** Gets a game's last recorded playcount */
-export async function getLastPlayCount(gameId: string): Promise<DatabasePlayerCount> {
-	const [playCount] = await pool.query<DatabasePlayerCount[]>(
-		'SELECT * FROM player_counts WHERE game_id = ? ORDER BY time DESC LIMIT 1;',
-		[gameId]
-	);
-
-	if (playCount.length == 0) {
-		return {
-			log_id: -1,
-			game_id: gameId,
-			online: 0,
-			time: new Date().toString()
-		} as DatabasePlayerCount;
-	}
-
-	return playCount[0];
-}
-
 /** Gets game by ID */
-export async function getGame(gameId: string): Promise<DatabaseGame> {
-	const [gameData] = await pool.query<DatabaseGame[]>('SELECT * FROM games WHERE game_id = ?;', [
-		gameId
-	]);
+export async function getGame(gameId: string): Promise<Join<DatabaseGame, { online: number }>> {
+	const [gameData] = await pool.query<Join<DatabaseGame, { online: number }>[]>(
+		'SELECT g.*,   COALESCE(pc.online, 0) AS online FROM games g LEFT JOIN (SELECT online, game_id FROM player_counts WHERE game_id = ? ORDER BY time DESC LIMIT 1) pc ON g.game_id = pc.game_id WHERE g.game_id = ?;',
+		[gameId, gameId]
+	);
 
 	if (gameData.length == 0) {
 		throw `No game exists with id ${gameId}`;
 	}
 
 	return gameData[0];
+}
+
+/** Gets most popular games */
+export async function getMostPopularGames(
+	limit: number = 10
+): Promise<Join<DatabaseGame, { online: number }>[]> {
+	const [gameData] = await pool.query<Join<DatabaseGame, { online: number }>[]>(
+		'SELECT g.*, COALESCE(pc.online, 0) AS online FROM games g LEFT JOIN (SELECT pc1.game_id, pc1.online FROM player_counts pc1 JOIN (SELECT game_id, MAX(time) AS max_time FROM player_counts GROUP BY game_id) pc2 ON pc1.game_id = pc2.game_id AND pc1.time = pc2.max_time) pc ON g.game_id = pc.game_id WHERE g.public = true ORDER BY online DESC LIMIT ?;',
+		[limit]
+	);
+
+	return gameData;
 }
 
 /** Gets game tags by ID */

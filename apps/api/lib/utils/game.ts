@@ -12,7 +12,7 @@ export const getApiGame = async (gameId: string): Promise<ApiGame> => {
 		description: gameData.description,
 		created: gameData.created_at,
 		public: gameData.public,
-		online: 0,
+		online: gameData.online,
 		tags
 	};
 
@@ -24,7 +24,6 @@ export const getUserApiGames = async (userId: string): Promise<ApiGame[]> => {
 	const games: ApiGame[] = [];
 
 	for (const gameData of userGames) {
-		const tags = await getGameTags(gameData.game_id);
 		games.push({
 			id: gameData.game_id,
 			ownerId: gameData.owner,
@@ -32,8 +31,7 @@ export const getUserApiGames = async (userId: string): Promise<ApiGame[]> => {
 			description: gameData.description,
 			created: gameData.created_at,
 			public: gameData.public,
-			online: 0,
-			tags
+			online: gameData.online
 		});
 	}
 

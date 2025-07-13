@@ -13,6 +13,10 @@ export async function getUserGames(client: RestClient): Promise<ApiGame[]> {
 	return await client.request<ApiGame[]>('GET', 'games');
 }
 
+export async function getMostPopular(client: RestClient): Promise<ApiGame[]> {
+	return await client.request<ApiGame[]>('GET', 'games/popular');
+}
+
 export async function getGame(client: RestClient, id: string): Promise<ApiGame> {
 	return await client.request<ApiGame>('GET', `games/${id}`);
 }
