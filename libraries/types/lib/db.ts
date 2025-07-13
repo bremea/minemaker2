@@ -1,4 +1,4 @@
-import type { RowDataPacket } from "mysql2";
+import type { RowDataPacket } from 'mysql2';
 
 export interface DatabasePlayer extends RowDataPacket {
 	player_uuid: string;
@@ -74,6 +74,13 @@ export interface DatabaseGame extends RowDataPacket {
 	description: string;
 	created_at: string;
 	public: boolean;
+}
+
+export interface DatabasePlayerCount extends RowDataPacket {
+	log_id: number;
+	game_id: string;
+	online: number;
+	time: string;
 }
 
 export interface DatabaseTag extends RowDataPacket {
