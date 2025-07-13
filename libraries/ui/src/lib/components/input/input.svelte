@@ -34,7 +34,7 @@
 </script>
 
 <div class="flex flex-col">
-	<label class="pb-1.5 pl-2 text-base">{@render children?.()}</label>
+	<label class="mb-1.5 ml-2 text-base">{@render children?.()}</label>
 	<input
 		bind:value
 		class={`group relative flex h-min w-full items-center space-x-2 rounded-full ${sizeClasses[componentSize]} focus:border-mm-blue border-2 border-gray-600 bg-gray-900 text-nowrap outline-0 transition-all hover:border-gray-500 hover:shadow-lg focus:bg-gray-900 ${className}`}
@@ -42,7 +42,7 @@
 	/>
 	{#if maxlength}
 		<span
-			class={`w-full pt-0.5 pr-2 text-right text-xs ${value.length == maxlength ? 'text-red-500' : 'text-gray-400'}`}
+			class={`w-full mt-0.5 mr-2 text-right text-xs ${value.length == maxlength ? 'text-red-500' : 'text-gray-400'}`}
 		>
 			{value.length}/{maxlength}
 		</span>

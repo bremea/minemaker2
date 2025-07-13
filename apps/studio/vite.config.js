@@ -15,6 +15,8 @@ export default defineConfig({
 		})
 	],
 
+	preserveSymlinks: true,
+
 	// Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
 	//
 	// 1. prevent vite from obscuring rust errors

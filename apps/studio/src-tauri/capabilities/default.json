@@ -1,13 +1,22 @@
 {
-  "$schema": "../gen/schemas/desktop-schema.json",
-  "identifier": "default",
-  "description": "Capability for the main window",
-  "windows": [
-    "main"
-  ],
-  "permissions": [
-    "core:default",
-    "opener:default",
-    "store:default"
-  ]
+	"$schema": "../gen/schemas/desktop-schema.json",
+	"identifier": "default",
+	"description": "Capability for the main window",
+	"windows": ["main"],
+	"permissions": [
+		"core:default",
+		"opener:default",
+		"store:default",
+		"dialog:default",
+		"os:default",
+		"fs:default",
+		"fs:write-all",
+		"fs:read-all",
+		"fs:allow-mkdir",
+		"core:path:allow-join",
+		{
+			"identifier": "fs:scope",
+			"allow": [{ "path": "**/*" }, {"path": "$APPLOCALDATA/**"}]
+		}
+	]
 }

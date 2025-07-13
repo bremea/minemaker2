@@ -20,7 +20,8 @@ export interface GameManifestResourcePack extends GameManifestResource {}
 export interface GameManifestSchematic extends GameManifestResource {}
 
 export interface GameManifest {
-	id: string;
+	localId: string;
+	name: string;
 	maxPlayers: number;
 	plugins?: { [key: string]: GameManifestPlugin };
 	resourcePacks?: { [key: string]: GameManifestResourcePack };

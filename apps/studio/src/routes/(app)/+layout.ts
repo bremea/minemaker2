@@ -1,20 +1,31 @@
-import { getLoggedIn, setApiClient, setLoggedIn, setUserState } from '$lib/state.svelte';
+import {
+	getApiClient,
+	getLocalProjects,
+	getLoggedIn,
+	getUserState,
+	setApiClient,
+	setLocalProjects,
+	setLoggedIn,
+	setUserState,
+	updateLocalProjectsState
+} from '$lib/state.svelte';
 import RestClient, { getMe, tokenRefresh } from '@minemaker/caller';
 import type { LayoutLoad } from './$types';
 import { PUBLIC_API_URL } from '$env/static/public';
-import { isRedirect, redirect } from '@sveltejs/kit';
-import { browser } from '$app/environment';
 import { load as storeLoad } from '@tauri-apps/plugin-store';
 import type { ApiVerifiedUser } from '@minemaker/types';
+import { goto } from '$app/navigation';
 
 export const load: LayoutLoad = async () => {
-	if (getLoggedIn() || !browser) return;
+	if (getLoggedIn()) {
+		return { apiClient: getApiClient(), me: getUserState(), localProjects: getLocalProjects() };
+	}
 
-	try {
+	const initApp = async () => {
 		const store = await storeLoad('auth.json', { autoSave: true });
 
 		if (!(await store.has('refreshToken'))) {
-			redirect(303, '/login');
+			return goto('/login');
 		}
 
 		const tokenFetch = await tokenRefresh(
@@ -31,24 +42,22 @@ export const load: LayoutLoad = async () => {
 		try {
 			var me = await getMe(apiClient);
 		} catch (e) {
-			redirect(303, '/verify');
+			return goto('/verify');
 		}
 
 		if (me.guest || !me.verified) {
-			redirect(303, '/verify');
+			return goto('/verify');
 		}
 
 		setApiClient(apiClient);
 
 		setUserState(me as ApiVerifiedUser);
 
+		await updateLocalProjectsState();
 		setLoggedIn(true);
-		return { apiClient: apiClient };
-	} catch (e) {
-		if (isRedirect(e)) {
-			redirect(e.status, e.location);
-		} else {
-			redirect(303, '/login');
-		}
-	}
+
+		return { apiClient: getApiClient(), me: getUserState(), localProjects: getLocalProjects() };
+	};
+
+	return { state: initApp() };
 };

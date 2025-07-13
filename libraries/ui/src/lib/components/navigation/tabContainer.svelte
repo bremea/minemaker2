@@ -15,38 +15,18 @@
 	export interface TabContainerProps extends HTMLAttributes<HTMLDivElement> {
 		class?: string;
 		withHomeTab?: boolean;
-		openTabs?: OpenTabList;
-		openTab?: OpenTabFunction;
-		closeTab?: CloseTabFunction;
+		openTabs: OpenTabList;
+		openTab: OpenTabFunction;
+		closeTab: CloseTabFunction;
 	}
-
-	export const openTabFunction = async (
-		label: string,
-		href: string,
-		switchIndex: boolean = true
-	) => {
-		openTabs.push({ label, href });
-		if (switchIndex) {
-			goto(href);
-		}
-	};
-
-	export const closeTabFunction = async (index: number, switchIndex: boolean = true) => {
-		openTabs.splice(index, 1);
-		if (switchIndex) {
-			goto(openTabs[index - 1].href);
-		}
-	};
-
-	let openTabsList = $state<OpenTabList>([]);
 
 	let {
 		children,
 		class: className,
 		withHomeTab = false,
-		openTabs = $bindable(openTabsList),
-		openTab = $bindable(openTabFunction),
-		closeTab = $bindable(closeTabFunction),
+		openTabs,
+		openTab,
+		closeTab,
 		...others
 	}: TabContainerProps = $props();
 </script>
