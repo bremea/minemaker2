@@ -1,12 +1,12 @@
 import type { ElysiaApp } from '$src/app';
-import { getApiGame, getGame, updateGame } from '@minemaker/db';
+import { getApiGame } from 'lib/utils/game';
 import { InternalApiError } from '@minemaker/types';
 import { t } from 'elysia';
-import { checkAuth } from 'lib/utils/auth';
+import { blockVerified } from 'lib/utils/auth';
+import { getGame, updateGame } from '@minemaker/db';
 
-// get project
 export default (app: ElysiaApp) =>
-	app.use(checkAuth).patch(
+	app.use(blockVerified).patch(
 		'',
 		async ({ params: { gameId }, body, id, authenticated }) => {
 			const project = await getGame(gameId);

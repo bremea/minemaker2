@@ -1,8 +1,9 @@
 import type { ElysiaApp } from '$src/app';
-import { getLinkRequest, deleteLinkRequest, linkPlayer, getApiUser } from '@minemaker/db';
+import { getLinkRequest, deleteLinkRequest, linkPlayer } from '@minemaker/db';
 import { InternalApiError } from '@minemaker/types';
 import { t } from 'elysia';
 import { blockAuth } from 'lib/utils/auth';
+import { getApiUser } from 'lib/utils/user';
 
 export default (app: ElysiaApp) =>
 	app.use(blockAuth).post(

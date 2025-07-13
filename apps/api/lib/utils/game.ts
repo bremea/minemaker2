@@ -1,4 +1,4 @@
-import { getGame, getGameTags, getUserGames } from '$src/studio';
+import { getGame, getGameTags, getUserGames } from '@minemaker/db';
 import { ApiGame } from '@minemaker/types';
 
 export const getApiGame = async (gameId: string): Promise<ApiGame> => {

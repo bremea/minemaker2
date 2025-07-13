@@ -1,7 +1,8 @@
 import type { ElysiaApp } from '$src/app';
-import { getApiGame, getApiUser, getPlaylog } from '@minemaker/db';
+import { getPlaylog } from '@minemaker/db';
 import { ApiPlaylog } from '@minemaker/types';
 import { blockNonGuest } from 'lib/utils/auth';
+import { getApiGame } from 'lib/utils/game';
 
 export default (app: ElysiaApp) =>
 	app.use(blockNonGuest).get('/', async ({ uuid }) => {

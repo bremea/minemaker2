@@ -1,13 +1,23 @@
 import type { ElysiaApp } from '$src/app';
-import { createLinkRequest, createPlayer, getPlayer, linkPlayer, playerExists } from '@minemaker/db';
+import {
+	createLinkRequest,
+	createPlayer,
+	getPlayer,
+	linkPlayer,
+	playerExists
+} from '@minemaker/db';
 import { InternalApiError, ApiPlayer } from '@minemaker/types';
 import { t } from 'elysia';
-import { blockAuth } from 'lib/utils/auth';
+import { blockAuth, blockNonGuest } from 'lib/utils/auth';
 
 export default (app: ElysiaApp) =>
 	app.use(blockAuth).get(
 		'/',
 		async ({ query, id }) => {
+			if (!id) {
+				throw new InternalApiError(400, 'Login and try again');
+			}
+
 			if (!query.code) {
 				throw new InternalApiError(400, 'Missing oauth code');
 			}
@@ -30,7 +40,7 @@ export default (app: ElysiaApp) =>
 			}
 
 			if (accessTokenResponse['error'] != undefined) {
-				console.log(accessTokenResponse)
+				console.log(accessTokenResponse);
 				throw new InternalApiError(500, 'Xbox API returned an error');
 			}
 

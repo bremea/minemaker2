@@ -1,7 +1,8 @@
 import type { ElysiaApp } from '$src/app';
-import { createGame, getApiGame } from '@minemaker/db';
+import { createGame } from '@minemaker/db';
 import { t } from 'elysia';
 import { blockVerified } from 'lib/utils/auth';
+import { getApiGame } from 'lib/utils/game';
 
 export default (app: ElysiaApp) =>
 	app.use(blockVerified).post(

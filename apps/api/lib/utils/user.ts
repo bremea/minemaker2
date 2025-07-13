@@ -1,4 +1,4 @@
-import { getUserAndPlayerData } from '$src/users';
+import { getUserAndPlayerData } from '@minemaker/db';
 import { ApiUser } from '@minemaker/types';
 
 export const getApiUser = async (id: string): Promise<ApiUser> => {
