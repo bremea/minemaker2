@@ -5,6 +5,7 @@ import { PUBLIC_API_URL } from '$env/static/public';
 import { isRedirect, redirect } from '@sveltejs/kit';
 import { browser } from '$app/environment';
 import { load as storeLoad } from '@tauri-apps/plugin-store';
+import type { ApiVerifiedUser } from '@minemaker/types';
 
 export const load: LayoutLoad = async () => {
 	if (getLoggedIn() || !browser) return;
@@ -27,18 +28,22 @@ export const load: LayoutLoad = async () => {
 
 		await store.set('refreshToken', tokenFetch.refreshToken);
 
-		setApiClient(apiClient);
-
-		const me = await getMe(apiClient);
-		setUserState(me);
-
-		setLoggedIn(true);
-
-		if (!me.verified) {
+		try {
+			var me = await getMe(apiClient);
+		} catch (e) {
 			redirect(303, '/verify');
 		}
 
-		return { apiClient };
+		if (me.guest || !me.verified) {
+			redirect(303, '/verify');
+		}
+
+		setApiClient(apiClient);
+
+		setUserState(me as ApiVerifiedUser);
+
+		setLoggedIn(true);
+		return { apiClient: apiClient };
 	} catch (e) {
 		if (isRedirect(e)) {
 			redirect(e.status, e.location);

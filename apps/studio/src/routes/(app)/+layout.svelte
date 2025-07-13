@@ -2,7 +2,6 @@
 	import { afterNavigate, goto } from '$app/navigation';
 	import { getUserState } from '$lib/state.svelte';
 	import { TabContainer, type OpenTabList } from '@minemaker/ui';
-	import { onMount, setContext } from 'svelte';
 
 	let userState = getUserState();
 

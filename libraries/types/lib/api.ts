@@ -5,33 +5,35 @@ export interface ApiPlayer {
 	lastLogin: string;
 }
 
-export type ApiUser =
-	| {
-			// not verified
-			id: string;
-			email: string;
-			verified: false;
-			created: string;
-			lastLogin: string;
-			gems: number;
-			guest: false;
-	  }
-	| {
-			// verified
-			id: string;
-			email: string;
-			verified: true;
-			player: ApiPlayer;
-			created: string;
-			lastLogin: string;
-			gems: number;
-			guest: false;
-	  }
-	| {
-			// guests
-			player: ApiPlayer;
-			guest: true;
-	  };
+export interface ApiVerifiedUser {
+	// verified
+	id: string;
+	email: string;
+	verified: true;
+	player: ApiPlayer;
+	created: string;
+	lastLogin: string;
+	gems: number;
+	guest: false;
+}
+
+export interface ApiUnverifiedUser {
+	// not verified
+	id: string;
+	email: string;
+	verified: false;
+	created: string;
+	lastLogin: string;
+	gems: number;
+	guest: false;
+}
+
+export interface ApiGuest {
+	player: ApiPlayer;
+	guest: true;
+}
+
+export type ApiUser = ApiVerifiedUser | ApiUnverifiedUser | ApiGuest;
 
 export interface ApiProfile {
 	id: string;
