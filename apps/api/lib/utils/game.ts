@@ -12,6 +12,7 @@ export const getApiGame = async (gameId: string): Promise<ApiGame> => {
 		description: gameData.description,
 		created: gameData.created_at,
 		public: gameData.public,
+		online: 0,
 		tags
 	};
 
@@ -31,6 +32,7 @@ export const getUserApiGames = async (userId: string): Promise<ApiGame[]> => {
 			description: gameData.description,
 			created: gameData.created_at,
 			public: gameData.public,
+			online: 0,
 			tags
 		});
 	}

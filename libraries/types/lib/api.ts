@@ -48,6 +48,7 @@ export interface ApiGame {
 	description: string;
 	created: string;
 	public: boolean;
+	online: number;
 	tags: string[];
 }
 
