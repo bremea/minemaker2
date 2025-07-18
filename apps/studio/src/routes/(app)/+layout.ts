@@ -4,7 +4,6 @@ import {
 	getLoggedIn,
 	getUserState,
 	setApiClient,
-	setLocalProjects,
 	setLoggedIn,
 	setUserState,
 	updateLocalProjectsState
@@ -28,35 +27,39 @@ export const load: LayoutLoad = async () => {
 			return goto('/login');
 		}
 
-		const tokenFetch = await tokenRefresh(
-			PUBLIC_API_URL,
-			(await store.get('refreshToken')) as string
-		);
-		const apiClient = new RestClient(tokenFetch.token, {
-			apiUrl: PUBLIC_API_URL,
-			refreshWithCookie: true
-		});
-
-		await store.set('refreshToken', tokenFetch.refreshToken);
-
 		try {
-			var me = await getMe(apiClient);
+			const tokenFetch = await tokenRefresh(
+				PUBLIC_API_URL,
+				(await store.get('refreshToken')) as string
+			);
+			const apiClient = new RestClient(tokenFetch.token, {
+				apiUrl: PUBLIC_API_URL,
+				refreshWithCookie: true
+			});
+
+			await store.set('refreshToken', tokenFetch.refreshToken);
+
+			try {
+				var me = await getMe(apiClient);
+			} catch (e) {
+				return goto('/verify');
+			}
+
+			if (me.guest || !me.verified) {
+				return goto('/verify');
+			}
+
+			setApiClient(apiClient);
+
+			setUserState(me as ApiVerifiedUser);
+
+			await updateLocalProjectsState();
+			setLoggedIn(true);
+
+			return { apiClient: getApiClient(), me: getUserState(), localProjects: getLocalProjects() };
 		} catch (e) {
-			return goto('/verify');
+			goto('/login');
 		}
-
-		if (me.guest || !me.verified) {
-			return goto('/verify');
-		}
-
-		setApiClient(apiClient);
-
-		setUserState(me as ApiVerifiedUser);
-
-		await updateLocalProjectsState();
-		setLoggedIn(true);
-
-		return { apiClient: getApiClient(), me: getUserState(), localProjects: getLocalProjects() };
 	};
 
 	return { state: initApp() };

@@ -32,10 +32,13 @@ export async function updateGame(
 }
 
 /** Gets user's games by ID */
-export async function getUserGames(ownerId: string): Promise<DatabaseGame[]> {
-	const [games] = await pool.query<DatabaseGame[]>('SELECT * FROM games WHERE owner = ?;', [
-		ownerId
-	]);
+export async function getUserGames(
+	ownerId: string
+): Promise<Join<DatabaseGame, { online: number }>[]> {
+	const [games] = await pool.query<Join<DatabaseGame, { online: number }>[]>(
+		'SELECT g.*, COALESCE(pc.online, 0) AS online FROM games g LEFT JOIN (SELECT pc1.game_id, pc1.online FROM player_counts pc1 JOIN (SELECT game_id, MAX(time) AS max_time FROM player_counts GROUP BY game_id) pc2 ON pc1.game_id = pc2.game_id AND pc1.time = pc2.max_time) pc ON g.game_id = pc.game_id WHERE g.owner = ?;',
+		[ownerId]
+	);
 
 	return games;
 }
@@ -43,7 +46,7 @@ export async function getUserGames(ownerId: string): Promise<DatabaseGame[]> {
 /** Gets game by ID */
 export async function getGame(gameId: string): Promise<Join<DatabaseGame, { online: number }>> {
 	const [gameData] = await pool.query<Join<DatabaseGame, { online: number }>[]>(
-		'SELECT g.*,   COALESCE(pc.online, 0) AS online FROM games g LEFT JOIN (SELECT online, game_id FROM player_counts WHERE game_id = ? ORDER BY time DESC LIMIT 1) pc ON g.game_id = pc.game_id WHERE g.game_id = ?;',
+		'SELECT g.*, COALESCE(pc.online, 0) AS online FROM games g LEFT JOIN (SELECT online, game_id FROM player_counts WHERE game_id = ? ORDER BY time DESC LIMIT 1) pc ON g.game_id = pc.game_id WHERE g.game_id = ?;',
 		[gameId, gameId]
 	);
 

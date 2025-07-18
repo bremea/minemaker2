@@ -10,6 +10,7 @@
 	import FluentGavel16Filled from '~icons/fluent/gavel-16-filled';
 	import FluentOpen16Filled from '~icons/fluent/open-16-filled';
 	import FluentEyeShow16Filled from '~icons/fluent/eye-show-16-filled';
+	import FluentWrenchSettings20Filled from '~icons/fluent/wrench-settings-20-filled'
 
 	let { children, data } = $props();
 </script>
@@ -34,6 +35,10 @@
 				<NavLink href={`/studio/projects/${data.project?.id}/edit`}>
 					<FluentEdit16Filled class="h-6 w-6" />
 					<span>Edit</span>
+				</NavLink>
+				<NavLink href={`/studio/projects/${data.project?.id}/builds`}>
+					<FluentWrenchSettings20Filled class="h-6 w-6" />
+					<span>Builds</span>
 				</NavLink>
 				<NavLink href={`/studio/projects/${data.project?.id}/analytics`}>
 					<FluentDataHistogram16Filled class="h-6 w-6" />

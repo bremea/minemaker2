@@ -35,10 +35,35 @@ export interface ApiGuest {
 
 export type ApiUser = ApiVerifiedUser | ApiUnverifiedUser | ApiGuest;
 
+export interface ApiServer {
+	id: string;
+	region: string;
+	gameId: string;
+	online: number;
+	maxPlayers: number;
+}
+
+export interface ApiPresence {
+	game: ApiGame;
+	server?: ApiServer;
+}
+
 export interface ApiProfile {
+	playerData: ApiPlayer;
+	userData?: ApiUserProfile;
+	creations?: ApiGame[];
+	presence?: ApiPresence;
+}
+
+export interface ApiUserProfile {
 	id: string;
 	verified: boolean;
-	minecraftAccount?: ApiPlayer;
+	created: string;
+	lastLogin: string;
+}
+
+export interface ApiGameProperties {
+	maxPlayers: number;
 }
 
 export interface ApiGame {
@@ -49,7 +74,16 @@ export interface ApiGame {
 	created: string;
 	public: boolean;
 	online: number;
+	properties?: ApiGameProperties;
 	tags?: string[];
+}
+
+export interface ApiBuild {
+	buildId: string;
+	gameId: string;
+	success: boolean;
+	submittedAt: string;
+	finishedAt: string;
 }
 
 export interface ApiTag {

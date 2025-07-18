@@ -11,7 +11,9 @@
 	let { data } = $props();
 </script>
 
-<LandingHeader />
+{#if !data.loggedIn}
+	<LandingHeader />
+{/if}
 
 <main class="flex w-full flex-col space-y-12 p-12">
 	{#if data.recentlyPlayed}

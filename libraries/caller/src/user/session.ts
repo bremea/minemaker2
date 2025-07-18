@@ -62,24 +62,33 @@ export async function signup(
 	return response;
 }
 
-export async function staticTokenRefresh(apiUrl: string): Promise<{ token: string }> {
+export async function staticTokenRefresh(
+	apiUrl: string,
+	setCookie: boolean = false
+): Promise<{ token: string; refreshToken: string }> {
 	const tempApiClient = new RestClient('temp', { apiUrl, refreshWithCookie: true });
 
-	const newToken = await tempApiClient.request<{ token: string }>('GET', 'user/session/refresh');
+	const newToken = await tempApiClient.request<{ token: string; refreshToken: string }>(
+		'GET',
+		`user/session/refresh${setCookie ? '?setCookie=true' : ''}`,
+		{ refreshIfUnauthorized: false }
+	);
 
 	return newToken;
 }
 
 export async function tokenRefresh(
 	apiUrl: string,
-	refreshToken: string
+	refreshToken: string,
+	setCookie: boolean = false
 ): Promise<{ token: string; refreshToken: string }> {
 	const tempApiClient = new RestClient('temp', { apiUrl, refreshWithCookie: true });
 
 	const newToken = await tempApiClient.request<{ token: string; refreshToken: string }>(
 		'POST',
-		'user/session/refresh',
+		`user/session/refresh${setCookie ? '?setCookie=true' : ''}`,
 		{
+			refreshIfUnauthorized: false,
 			body: JSON.stringify({ refreshToken })
 		}
 	);

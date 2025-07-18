@@ -1,4 +1,4 @@
-import type { ApiTag } from './api';
+import type { ApiGameProperties, ApiTag } from './api';
 
 export interface StudioProject {
 	id: string;
@@ -10,20 +10,25 @@ export interface StudioProject {
 	tags: ApiTag[];
 }
 
+export interface GameManifestProperties {
+	maxPlayers: number;
+}
+
 export interface GameManifestResource {
 	id: string;
-	objectId: string;
+	path: string;
 }
 
 export interface GameManifestPlugin extends GameManifestResource {}
 export interface GameManifestResourcePack extends GameManifestResource {}
-export interface GameManifestSchematic extends GameManifestResource {}
+export interface GameManifestWorld extends GameManifestResource {}
 
 export interface GameManifest {
+	version: number;
 	localId: string;
 	name: string;
-	maxPlayers: number;
-	plugins?: { [key: string]: GameManifestPlugin };
-	resourcePacks?: { [key: string]: GameManifestResourcePack };
-	schematics?: { [key: string]: GameManifestSchematic };
+	properties: ApiGameProperties;
+	plugins?: Record<string, GameManifestPlugin>;
+	resourcePacks?: Record<string, GameManifestResourcePack>;
+	worlds?: Record<string, GameManifestWorld>;
 }

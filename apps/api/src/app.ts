@@ -5,6 +5,7 @@ import { Snowyflake } from 'snowyflake';
 import { ip } from 'elysia-ip';
 import { InternalApiError } from '@minemaker/types';
 import { cors } from '@elysiajs/cors';
+import { S3Client } from 'bun';
 
 const app = new Elysia()
 	.error({ InternalApiError })
@@ -45,6 +46,7 @@ const app = new Elysia()
 			epoch: BigInt(1588651200000)
 		})
 	)
+	.decorate('r2', new S3Client())
 	.use(
 		await autoload({
 			prefix: '/api'

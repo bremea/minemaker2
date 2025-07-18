@@ -10,6 +10,7 @@
 		"@elysiajs/jwt": "^1.2.0",
 		"@minemaker/db": "workspace:*",
 		"@minemaker/types": "workspace:*",
+		"@minemaker/realtime": "workspace:*",
 		"@types/bcrypt": "^5.0.2",
 		"bcrypt": "^6.0.0",
 		"elysia": "latest",

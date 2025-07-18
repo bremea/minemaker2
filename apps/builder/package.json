@@ -1,0 +1,21 @@
+{
+	"name": "@minemaker/builder",
+	"module": "src/index.ts",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "bun run --watch ."
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@minemaker/realtime": "workspace:*",
+		"@minemaker/db": "workspace:*"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"@types/unzipper": "^0.10.11",
+		"unzipper": "^0.12.3"
+	}
+}

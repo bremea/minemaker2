@@ -1,7 +1,6 @@
 import { PUBLIC_API_URL } from '$env/static/public';
-import RestClient, { getMe, getProfile } from '@minemaker/caller';
-import { getMostPopular } from '@minemaker/caller';
-import { getPlaylog } from '@minemaker/caller';
+import RestClient, { getProfile } from '@minemaker/caller';
+import { error } from '@sveltejs/kit';
 
 export const load = async ({ cookies, parent, params }) => {
 	const layoutData = await parent();
@@ -14,5 +13,11 @@ export const load = async ({ cookies, parent, params }) => {
 		useCookieAuth: token == undefined
 	});
 
-	return await getProfile(apiClient, params.username);
+	try {
+		const profile = await getProfile(apiClient, params.username);
+
+		return { profile };
+	} catch (e) {
+		throw error(404);
+	}
 };

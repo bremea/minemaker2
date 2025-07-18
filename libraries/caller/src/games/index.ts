@@ -1,6 +1,8 @@
 import type { ApiGame } from '@minemaker/types';
 import type RestClient from '..';
 
+export * from './builds';
+
 export async function createGame(client: RestClient, projectName: string): Promise<ApiGame> {
 	return await client.request<ApiGame>('POST', 'games/new', {
 		body: JSON.stringify({

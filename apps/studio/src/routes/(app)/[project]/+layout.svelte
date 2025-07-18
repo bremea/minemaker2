@@ -45,13 +45,14 @@
 				class="size-6 h-6 w-6 text-gray-400 transition-all group-hover:text-white"
 			/>
 		</button>
-		<button
+		<a
+			href={`/${data.project.id}/build`}
 			class="group pointer-events-auto flex aspect-square h-full items-center justify-center rounded-full transition-all hover:bg-gray-600 active:scale-95 active:bg-gray-500"
 		>
 			<FluentWrenchSettings20Filled
 				class="size-6 h-6 w-6 text-gray-400 transition-all group-hover:text-white"
 			/>
-		</button>
+		</a>
 	</div>
 	<div class="flex flex-1 items-center justify-end space-x-2">
 		<a

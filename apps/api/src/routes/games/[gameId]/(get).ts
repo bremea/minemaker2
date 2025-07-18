@@ -7,14 +7,14 @@ import { getApiGame } from 'lib/utils/game';
 export default (app: ElysiaApp) =>
 	app.use(checkAuth).get(
 		'',
-		async ({ params: { gameId }, auth }) => {
+		async ({ params: { gameId }, authResult }) => {
 			const game = await getApiGame(gameId);
 
 			if (game.public) {
 				return game;
 			}
 
-			if (!game.public && auth.authenticated && game.ownerId === auth.id) {
+			if (!game.public && authResult.authenticated && game.ownerId === authResult.id) {
 				return game;
 			} else {
 				throw new NotFoundError();

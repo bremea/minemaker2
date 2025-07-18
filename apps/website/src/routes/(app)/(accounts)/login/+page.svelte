@@ -22,7 +22,7 @@
 		try {
 			await login(PUBLIC_API_URL, email, password, true);
 
-			goto('/');
+			window.location.href = '/';
 		} catch (e: any) {
 			loading = false;
 			if (e.message) {

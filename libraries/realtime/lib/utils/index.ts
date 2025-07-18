@@ -1,3 +1,4 @@
+export * from './queues';
 export * from './queries';
 
 export async function wait(ms: number): Promise<void> {

@@ -1,12 +1,18 @@
 import type { ElysiaApp } from '$src/app';
-import { createSession, getSession, getUser, invalidateSession, updateTrustedIpLogin } from '@minemaker/db';
+import {
+	createSession,
+	getSession,
+	getUser,
+	invalidateSession,
+	updateTrustedIpLogin
+} from '@minemaker/db';
 import { InternalApiError } from '@minemaker/types';
 import { t } from 'elysia';
 
 export default (app: ElysiaApp) =>
 	app.post(
 		'/',
-		async ({ body, jwt, snowflake, headers, ip }) => {
+		async ({ cookie: { refresh, token }, query, body, jwt, snowflake, headers, ip }) => {
 			if (ip === '::1' || ip === '::ffff:127.0.0.1') {
 				ip = '127.0.0.1';
 			}
@@ -53,6 +59,23 @@ export default (app: ElysiaApp) =>
 					id: user.account_id,
 					uuid: user.mc_account,
 					exp: Math.floor(Date.now() / 1000) + 60 * 60 // expires in 1 hour
+				});
+			}
+
+			if (query.setCookie == 'true') {
+				refresh.set({
+					httpOnly: true,
+					secure: !process.env.DEVELOPMENT_MODE,
+					path: query.setCookie == 'true' ? '/' : '/api/user/session/refresh',
+					value: refreshToken,
+					expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+				});
+
+				token.set({
+					httpOnly: true,
+					secure: !process.env.DEVELOPMENT_MODE,
+					value: newToken,
+					expires: new Date(Date.now() + 60 * 60 * 1000)
 				});
 			}
 

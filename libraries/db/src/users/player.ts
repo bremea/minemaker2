@@ -1,5 +1,11 @@
 import { pool } from '$src/connection';
-import { InternalApiError, DatabasePlayer, DatabaseLinkRequest } from '@minemaker/types';
+import {
+	InternalApiError,
+	DatabasePlayer,
+	DatabaseLinkRequest,
+	DatabaseUser,
+	Join
+} from '@minemaker/types';
 
 /** Creates new player */
 export async function createPlayer(playerUUID: string, username: string): Promise<void> {
@@ -7,6 +13,21 @@ export async function createPlayer(playerUUID: string, username: string): Promis
 		playerUUID,
 		username
 	]);
+}
+
+export async function getPlayerByUsername(
+	username: string
+): Promise<Join<DatabasePlayer, { account_id: string | null }>> {
+	const [playerData] = await pool.query<Join<DatabasePlayer, { account_id: string | null }>[]>(
+		'SELECT players.*, users.account_id FROM players LEFT JOIN users ON users.mc_account = players.player_uuid WHERE players.username = ?;',
+		[username]
+	);
+
+	if (playerData.length == 0) {
+		throw new InternalApiError(404, `No player exists with username ${username}`);
+	}
+
+	return playerData[0];
 }
 
 /** Links Minecraft account to user account */

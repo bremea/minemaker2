@@ -1,7 +1,18 @@
-import { exists, BaseDirectory, mkdir, writeTextFile, readTextFile } from '@tauri-apps/plugin-fs';
+import {
+	exists,
+	BaseDirectory,
+	mkdir,
+	writeTextFile,
+	readTextFile,
+	create,
+	readDir,
+	readFile
+} from '@tauri-apps/plugin-fs';
 import type { GameManifest } from '@minemaker/types';
-import { join } from '@tauri-apps/api/path';
+import { appLocalDataDir, join } from '@tauri-apps/api/path';
 import type { LocalProjectListing } from './types';
+import JSZip from 'jszip';
+import { path } from '@tauri-apps/api';
 
 export const createProjectIndex = async (data: LocalProjectListing[] = []) => {
 	await writeTextFile('projects.json', JSON.stringify(data), {
@@ -52,9 +63,10 @@ export const createProject = async (id: string, name: string, path: string) => {
 	await mkdir(await join(path, 'worlds'));
 
 	const manifest: GameManifest = {
+		version: 1,
 		localId: id,
 		name,
-		maxPlayers: 0
+		properties: { maxPlayers: 10 }
 	};
 
 	const manifestPath = await join(path, 'manifest.json');
@@ -66,3 +78,37 @@ export const createProject = async (id: string, name: string, path: string) => {
 		manifestPath
 	});
 };
+
+export async function createBuildArchive(id: number, src: string): Promise<string> {
+	if (
+		!(await exists('archives', {
+			baseDir: BaseDirectory.AppLocalData
+		}))
+	) {
+		await mkdir('archives', { baseDir: BaseDirectory.AppLocalData });
+	}
+
+	const file = await create(`archives/${id}`, { baseDir: BaseDirectory.AppLocalData });
+
+	const zip = new JSZip();
+	await zipDir(zip, src);
+	const zipBlob = await zip.generateAsync({ type: 'uint8array' });
+	await file.write(zipBlob);
+	await file.close();
+
+	return await join(await appLocalDataDir(), `archives/${id}`);
+}
+
+async function zipDir(zip: JSZip, directory: string, zipFolder: JSZip | null = null) {
+	const entries = await readDir(directory);
+
+	for (const entry of entries) {
+		if (entry.isDirectory) {
+			const folder = (zipFolder ?? zip).folder(entry.name);
+			await zipDir(zip, await join(directory, entry.name), folder ?? zip);
+		} else {
+			const fileData = await readFile(await join(directory, entry.name));
+			(zipFolder ?? zip).file(entry.name, fileData);
+		}
+	}
+}

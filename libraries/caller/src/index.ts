@@ -1,3 +1,5 @@
+import { staticTokenRefresh, tokenRefresh } from './user/session';
+
 export * from './user/index';
 export * from './games/index';
 
@@ -16,6 +18,8 @@ interface ClientOptions {
 	apiUrl: string;
 	refreshWithCookie: boolean;
 	useCookieAuth?: boolean;
+	refreshToken?: string;
+	onRefresh?: (token: string, refresh: string) => void;
 }
 
 interface RequestOptions extends BunFetchRequestInit {
@@ -35,7 +39,7 @@ export default class RestClient {
 	public async request<T>(
 		method: HttpMethods,
 		endpoint: string,
-		options?: RequestOptions
+		options: RequestOptions = { refreshIfUnauthorized: true }
 	): Promise<T> {
 		const headers: HeadersInit = {
 			'Content-Type': 'application/json',
@@ -80,10 +84,22 @@ export default class RestClient {
 	}
 
 	public async refreshToken(useCookieAuth: boolean = false): Promise<void> {
-		const newToken = await this.request<{ token: string }>(
-			'GET',
-			`/api/user/session/refresh${useCookieAuth ? '?setCookie=true' : ''}`
-		);
-		this.authorization = `Bearer ${newToken.token}`;
+		if (this.options.refreshToken) {
+			const newToken = await tokenRefresh(
+				this.options.apiUrl,
+				this.options.refreshToken,
+				useCookieAuth
+			);
+			if (this.options.onRefresh) {
+				this.options.onRefresh(newToken.token, newToken.refreshToken);
+			}
+			this.authorization = `Bearer ${newToken.token}`;
+		} else {
+			const newToken = await staticTokenRefresh(this.options.apiUrl, useCookieAuth);
+			if (this.options.onRefresh) {
+				this.options.onRefresh(newToken.token, newToken.refreshToken);
+			}
+			this.authorization = `Bearer ${newToken.token}`;
+		}
 	}
 }

@@ -1,22 +1,21 @@
 <script lang="ts">
 	import { getLoggedIn, getUserState } from '$lib/state.svelte';
-	import { LinkButton, NavLink } from '@minemaker/ui';
+	import { Button, Input, LinkButton, NavLink } from '@minemaker/ui';
 
 	import FluentTextAlignJustify20Filled from '~icons/fluent/text-align-justify-20-filled';
 	import FluentDismiss20Filled from '~icons/fluent/dismiss-20-filled';
 	import FluentHome20Filled from '~icons/fluent/home-20-filled';
 	import FluentPaintBrush20Filled from '~icons/fluent/paint-brush-20-filled';
 	import FluentSettings20Filled from '~icons/fluent/settings-20-filled';
+	import FluentSearch20Filled from '~icons/fluent/search-20-filled';
 
-	let userState = getUserState();
-	let loggedIn = getLoggedIn();
+	let userState = $derived(getUserState());
+	let loggedIn = $derived(getLoggedIn());
 
 	let sideNavOpen = $state(false);
 	let topNav: HTMLElement;
 
 	function clickOutside(node: HTMLElement) {
-		console.log(userState)
-
 		const handleClick = (event: MouseEvent) => {
 			if (!node.contains(event.target as Node) && sideNavOpen && event.target != topNav) {
 				sideNavOpen = false;
@@ -34,7 +33,7 @@
 </script>
 
 <nav
-	class="relative z-50 flex w-full justify-end bg-gray-600 px-12 py-2 shadow-lg"
+	class="relative z-50 flex w-screen justify-end bg-gray-600 px-12 py-2 h-14 shadow-lg"
 	bind:this={topNav}
 >
 	<a
@@ -45,33 +44,44 @@
 		<span class="text-mm-blue text-xs">beta</span>
 	</a>
 
-	<div class="flex items-center space-x-4">
+	<div class="pointer-events-none flex w-full flex-1 items-center justify-center pl-62 h-10">
+		<div class="pointer-events-auto flex h-full w-full items-center justify-center space-x-2">
+			<Input class="bg-gray-800! text-white h-full! outline-gray-800 hover:bg-gray-700 border-gray-800 w-64!" componentSize="sm" stretchHeight={true} />
+			<LinkButton size="sm" color="darkgray" class="h-full!">
+				<FluentSearch20Filled class="h-full" />
+			</LinkButton>
+		</div>
+	</div>
+
+	<div class="flex w-max items-center space-x-4">
 		{#if loggedIn}
-			<!--<div class="flex items-center mr-8">
-				<img src="/gem.png" alt="Gem icon" class="h-10" />
-				<span class="font-bold">{userState!.gems}</span>
-			</div>-->
-			{#if userState!.guest}
-				<a href={`/link`} class="flex h-10 items-center">
-					<img
-						src={`https://mc-heads.net/avatar/${userState!.player.uuid.replace(/-/g, '')}`}
-						alt="Player head"
-						title={userState!.player.username}
-						class="h-8"
-					/>
-				</a>
-			{:else}
-				<a href={`/profile/${userState!.id}`} class="flex h-10 items-center">
-					<img
-						src={userState!.verified
-							? `https://mc-heads.net/avatar/${userState!.player.uuid.replace(/-/g, '')}`
-							: 'https://mc-heads.net/avatar/MHF_Steve'}
-						alt="Player head"
-						title={userState!.verified ? userState!.player.username : userState!.email}
-						class="h-8"
-					/>
-				</a>
-			{/if}
+			<div class="flex space-x-4">
+				{#if userState!.guest || userState?.verified}
+					<a href={`/profile/${userState!.player.username}`} class="flex h-10 items-center">
+						<img
+							src={`https://mc-heads.net/avatar/${userState!.player.uuid.replace(/-/g, '')}`}
+							alt="Player head"
+							title={userState!.player.username}
+							class="aspect-square size-8"
+						/>
+					</a>
+				{:else}
+					<a href={`/link`} class="flex h-10 items-center">
+						<img
+							src="https://mc-heads.net/avatar/MHF_Steve"
+							alt="Player head"
+							title={userState!.email}
+							class="aspect-square size-8"
+						/>
+					</a>
+				{/if}
+				<div class="flex items-center">
+					<img src="/gem.png" alt="Gem icon" class="h-10" />
+					<span class="text-xl font-bold"
+						>{!userState?.guest && userState?.verified ? userState.gems : 0}</span
+					>
+				</div>
+			</div>
 		{:else}
 			<LinkButton color="darkgray" size="md" href="/login">Login</LinkButton>
 		{/if}

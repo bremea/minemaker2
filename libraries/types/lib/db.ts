@@ -85,6 +85,20 @@ export interface DatabasePlayerCount extends RowDataPacket {
 	time: string;
 }
 
+export interface DatabaseBuild extends RowDataPacket {
+	build_id: string;
+	game_id: string;
+	account_id: string;
+	status: number;
+	success: boolean;
+	description: string;
+	artifact_object: string;
+	submitter_ip: string;
+	builder_id: number;
+	submitted_at: string;
+	finished_at: string;
+}
+
 export interface DatabaseTag extends RowDataPacket {
 	tag_id: number;
 	name: string;
