@@ -7,11 +7,28 @@ export async function createBuild(
 	gameId: string,
 	success: boolean,
 	artifactObject: string | null,
-	submitTime: string
+	submitTime: string,
+	description: string
 ): Promise<void> {
 	await pool.query(
-		'INSERT INTO builds (build_id, game_id, success, artifact_object, submitted_at) VALUES (?, ?, ?, ?, ?);',
-		[id, gameId, success, artifactObject, submitTime]
+		'INSERT INTO builds (build_id, game_id, success, artifact_object, submitted_at, description) VALUES (?, ?, ?, ?, STR_TO_DATE(?, "%Y-%m-%dT%TZ"), ?);',
+		[id, gameId, success, artifactObject, submitTime, description]
+	);
+}
+
+/** Updates a build */
+export async function updateBuild(
+	id: string,
+	success: boolean,
+	status: string,
+	artifactObject: string | null,
+	logObject: string | null,
+	builderId: string | null,
+	finished: string | null
+): Promise<void> {
+	await pool.query(
+		'UPDATE builds SET success = ?, status = ?, artifact_object = ?, log_object = ?, builder_id = ?, finished_at = STR_TO_DATE(?, "%Y-%m-%dT%TZ") WHERE game_id = ?;',
+		[success, status, artifactObject, logObject, builderId, finished, id]
 	);
 }
 
