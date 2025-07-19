@@ -1,4 +1,5 @@
 import type { ElysiaApp } from '$src/app';
+import { createBuild } from '@minemaker/db';
 import { BuildSubmitData, submit } from '@minemaker/realtime';
 import { t } from 'elysia';
 import { verifiedUsersOnly } from 'lib/utils/auth';
@@ -15,7 +16,16 @@ export default (app: ElysiaApp) =>
 				buildSrc: body.buildObjectId
 			};
 
-			submit('queues.builds', JSON.stringify(buildData));
+			await createBuild(
+				buildId,
+				params.gameId,
+				false,
+				null,
+				new Date(Date.now()).toISOString().split('.')[0]+"Z",
+				body.description ?? ''
+			);
+
+			submit(`queues.builds.${params.gameId}`, JSON.stringify(buildData));
 
 			return { submitted: true };
 		},
@@ -24,7 +34,8 @@ export default (app: ElysiaApp) =>
 				gameId: t.String()
 			}),
 			body: t.Object({
-				buildObjectId: t.String()
+				buildObjectId: t.String(),
+				description: t.Optional(t.String())
 			})
 		}
 	);

@@ -1,4 +1,4 @@
-import { Elysia } from 'elysia';
+import { Elysia, NotFoundError } from 'elysia';
 import { jwt, JWTPayloadSpec } from '@elysiajs/jwt';
 import { InternalApiError } from '@minemaker/types';
 import { checkUserVerified, getUser } from '@minemaker/db';
@@ -23,6 +23,36 @@ export const checkAuth = new Elysia()
 				};
 			} else if (token.value) {
 				return { authResult: await checkToken(token.value, jwt) };
+			} else {
+				return {
+					authResult: {
+						authenticated: false
+					}
+				};
+			}
+		}
+	);
+
+export const checkServerAuth = new Elysia()
+	.use(
+		jwt({
+			name: 'jwt',
+			secret: process.env.JWT_SECRET!,
+			exp: '1h'
+		})
+	)
+	.resolve(
+		{ as: 'global' },
+		async ({ headers, jwt, cookie: { token } }): Promise<{ authResult: AuthResult }> => {
+			if (headers.authorization && headers.authorization.startsWith('Bearer ')) {
+				return {
+					authResult: await checkServerToken(
+						headers.authorization.substring(7, headers.authorization.length),
+						jwt
+					)
+				};
+			} else if (token.value) {
+				return { authResult: await checkServerToken(token.value, jwt) };
 			} else {
 				return {
 					authResult: {
@@ -105,7 +135,6 @@ type AuthResult =
 const checkToken = async (
 	token: string,
 	jwt: {
-		sign?: (morePayload: Record<string, string | number> & JWTPayloadSpec) => Promise<string>;
 		verify: any;
 	}
 ): Promise<AuthResult> => {
@@ -123,3 +152,33 @@ const checkToken = async (
 		id: userData.id
 	};
 };
+
+const checkServerToken = async (
+	token: string,
+	jwt: {
+		verify: any;
+	}
+): Promise<{ authenticated: boolean; id?: string }> => {
+	const serverData = await jwt.verify(token);
+
+	if (!serverData || !serverData.server) {
+		return {
+			authenticated: false
+		};
+	}
+
+	return {
+		authenticated: true,
+		id: serverData.id
+	};
+};
+
+export const serverOnly = new Elysia()
+	.use(checkServerAuth)
+	.resolve({ as: 'scoped' }, async ({ authResult }) => {
+		if (authResult?.authenticated) {
+			return authResult as { authenticated: boolean; id?: string };
+		} else {
+			throw new InternalApiError(400, 'Unauthorized');
+		}
+	});
