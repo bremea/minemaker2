@@ -30,11 +30,10 @@
 
 			console.log(uploadLink);
 			const headers = new Map();
-			headers.set('Content-Type': '')
+			headers.set('Content-Type', '')
 
 			await upload(uploadLink.url, archive, ({ progress, total }) =>
 				console.log(`Uploaded ${progress} of ${total} bytes`),
-				{}
 			);
 		} catch (e: any) {
 			loading = false;
