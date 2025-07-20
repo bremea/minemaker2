@@ -1,19 +1,26 @@
 import { pool } from '$src/connection';
 import { DatabaseBuild } from '@minemaker/types';
 
-/** Creates new game */
+/** Creates new build */
 export async function createBuild(
 	id: string,
 	gameId: string,
 	success: boolean,
 	artifactObject: string | null,
 	submitTime: string,
-	description: string
-): Promise<void> {
-	await pool.query(
-		'INSERT INTO builds (build_id, game_id, success, artifact_object, submitted_at, description) VALUES (?, ?, ?, ?, STR_TO_DATE(?, "%Y-%m-%dT%TZ"), ?);',
-		[id, gameId, success, artifactObject, submitTime, description]
+	description: string,
+	ip: string
+): Promise<DatabaseBuild> {
+	const [buildData] = await pool.query<DatabaseBuild[]>(
+		'INSERT INTO builds (build_id, game_id, success, artifact_object, submitted_at, description, submitter_ip) VALUES (?, ?, ?, ?, STR_TO_DATE(?, "%Y-%m-%dT%TZ"), ?, ?) RETURNING *;',
+		[id, gameId, success, artifactObject, submitTime, description, ip]
 	);
+
+	if (buildData.length == 0) {
+		throw `Build creation failed`;
+	}
+
+	return buildData[0];
 }
 
 /** Updates a build */
@@ -25,11 +32,17 @@ export async function updateBuild(
 	logObject: string | null,
 	builderId: string | null,
 	finished: string | null
-): Promise<void> {
-	await pool.query(
-		'UPDATE builds SET success = ?, status = ?, artifact_object = ?, log_object = ?, builder_id = ?, finished_at = STR_TO_DATE(?, "%Y-%m-%dT%TZ") WHERE game_id = ?;',
-		[success, status, artifactObject, logObject, builderId, finished, id]
+): Promise<DatabaseBuild> {
+	const [buildData] = await pool.query<DatabaseBuild[]>(
+		'UPDATE builds SET success = ?, status = ?, artifact_object = ?, log_object = ?, builder_id = ?, finished_at = STR_TO_DATE(?, "%Y-%m-%dT%TZ") WHERE build_id = ?; SELECT * FROM builds WHERE build_id = ?;',
+		[success, status, artifactObject, logObject, builderId, finished, id, id]
 	);
+
+	if (buildData.length < 1) {
+		throw `Build update failed`;
+	}
+
+	return buildData[1];
 }
 
 /** Gets build by ID */
