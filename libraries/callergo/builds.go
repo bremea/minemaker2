@@ -1,10 +1,11 @@
 package callergo
 
 type UpdateBuildBodyData struct {
-	Status  string `json:"status"`
-	Success bool   `json:"success"`
-	Object  string `json:"object"`
-	Log     string `json:"log"`
+	Status   string `json:"status"`
+	Success  bool   `json:"success"`
+	Object   string `json:"object"`
+	Log      string `json:"log"`
+	Finished bool   `json:"finished"`
 }
 
 func UpdateBuild(a ApiClient, id string, d UpdateBuildBodyData) error {
