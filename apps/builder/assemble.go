@@ -68,25 +68,26 @@ func buildServer(svr string, target string, bl *Logger, dc *DownloadCache) error
 	return nil
 }
 
-func assemble(manifest BuildManifest, wd string, bl *Logger, dc *DownloadCache) error {
+func assemble(manifest BuildManifest, wd string, bl *Logger, dc *DownloadCache) (string, error) {
 	dist := filepath.Join(wd, "dist")
 
 	err := os.RemoveAll(dist)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	err = os.MkdirAll(dist, 0755)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	bl.Log(fmt.Sprintf("downloading server archive v%d...", manifest.Config.Version))
 	sver := fmt.Sprintf("server-%d.zip", manifest.Config.Version)
 	err = buildServer(sver, dist, bl, dc)
 	if err != nil {
-		return err
+		return "", err
 	}
+
 	bl.Log("beginning assembly...")
 
 	for plugin := range manifest.Plugins {
@@ -94,7 +95,7 @@ func assemble(manifest BuildManifest, wd string, bl *Logger, dc *DownloadCache) 
 
 		bl.Log(fmt.Sprintf("downloading plugin %s...", plugin))
 		if !filepath.IsLocal(pluginData.Src) {
-			return fmt.Errorf("illegal file: %s", pluginData.Src)
+			return "", fmt.Errorf("illegal file: %s", pluginData.Src)
 		}
 
 		os.Rename(filepath.Join(wd, pluginData.Src), filepath.Join(dist, "plugins", pluginData.Src))
@@ -126,7 +127,12 @@ func assemble(manifest BuildManifest, wd string, bl *Logger, dc *DownloadCache) 
 			log.Printf("Added plugin %s", resourcePack)
 		}*/
 
-	bl.Log("completing assembly...")
+	// ...
 
-	return nil
+	bl.Log("compressing data...")
+
+	tar := filepath.Join(dist, "project.tar")
+	buildTar(dist, tar)
+
+	return tar, nil
 }
