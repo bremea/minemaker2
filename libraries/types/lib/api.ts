@@ -81,7 +81,12 @@ export interface ApiGame {
 export interface ApiBuild {
 	buildId: string;
 	gameId: string;
+	userId: string;
+	status: string;
 	success: boolean;
+	description: string;
+	builderId: string;
+	submitterIp: string;
 	submittedAt: string;
 	finishedAt: string;
 }

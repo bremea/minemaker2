@@ -89,12 +89,13 @@ export interface DatabaseBuild extends RowDataPacket {
 	build_id: string;
 	game_id: string;
 	account_id: string;
-	status: number;
+	status: string;
 	success: boolean;
 	description: string;
 	artifact_object: string;
+	log_object: string;
 	submitter_ip: string;
-	builder_id: number;
+	builder_id: string;
 	submitted_at: string;
 	finished_at: string;
 }
