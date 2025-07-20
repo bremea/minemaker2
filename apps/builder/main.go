@@ -55,11 +55,12 @@ func main() {
 	})
 
 	iter, _ := c.Messages()
+	defer iter.Stop()
 	for {
 		msg, err := iter.Next()
 		if err != nil {
 			log.Println("error while fetching next message in queue")
-			return
+			continue
 		}
 
 		msg.Ack()
@@ -67,15 +68,22 @@ func main() {
 		var buildData BuildNotification
 		if json.Unmarshal(msg.Data(), &buildData) != nil {
 			log.Println("error while parsing build notification")
-			break
+			continue
 		}
 
 		buildLog, err := NewLogger(filepath.Join(os.TempDir(), (buildData.BuildId+".txt")), true, buildData.BuildId, &a)
 		if err != nil {
 			log.Println("error creating logger")
-			break
+			continue
 		}
 		buildLog.Log(fmt.Sprintf("received build %s", buildData.BuildId))
+
+		err = ClaimBuild(a, buildData.BuildId)
+		if err != nil {
+			buildLog.Error(fmt.Sprintf("error claiming build: %s", err.Error()))
+			continue
+		}
+
 		buildLog.Log(fmt.Sprintf("downloading artifact %v...", buildData.Src))
 
 		zipPath := filepath.Join(os.TempDir(), buildData.BuildId+".zip")
@@ -85,8 +93,8 @@ func main() {
 			os.Remove(zipPath)
 			continue
 		}
-
 		buildLog.Log(fmt.Sprintf("downloaded artifact %v", buildData.Src))
+
 		path := filepath.Join(os.TempDir(), buildData.BuildId)
 
 		err = unzip(z, path, true)
@@ -107,7 +115,15 @@ func main() {
 			continue
 		}
 
-		err = assemble(manifest, path, buildLog, &dc)
+		tar, err := assemble(manifest, path, buildLog, &dc)
+		if err != nil {
+			buildLog.Error(err.Error())
+			os.RemoveAll(path)
+			continue
+		}
+
+		buildLog.Log("building rootfs...")
+		err = build(tar, buildData.BuildId, buildLog)
 		if err != nil {
 			buildLog.Error(err.Error())
 			os.RemoveAll(path)
@@ -117,11 +133,12 @@ func main() {
 		buildTime := 0
 		obj := buildData.BuildId + ".rootfs"
 
-		buildLog.Log(fmt.Sprintf("Build completed in %d", buildTime))
+		buildLog.Log(fmt.Sprintf("build completed in %ds", buildTime))
 
 		logObj := buildData.BuildId + ".txt"
 		err = buildLog.Upload(logObj)
 		if err != nil {
+			fmt.Println(err.Error())
 			buildLog.Error(err.Error())
 			os.RemoveAll(path)
 			continue
@@ -131,6 +148,4 @@ func main() {
 
 		os.RemoveAll(path) // clean up
 	}
-	iter.Stop()
-
 }
