@@ -19,13 +19,20 @@ export default (app: ElysiaApp) =>
 			const apiBuilds: ApiBuild[] = [];
 
 			for (const build of builds) {
-				apiBuilds.push({
+				const apiBuild: ApiBuild = {
 					buildId: build.build_id,
 					gameId: build.game_id,
 					success: build.success,
 					submittedAt: build.submitted_at,
-					finishedAt: build.finished_at
-				});
+					finishedAt: build.finished_at,
+					userId: build.account_id,
+					status: build.status,
+					description: build.description,
+					builderId: build.builder_id,
+					submitterIp: build.submitter_ip
+				};
+
+				apiBuilds.push(apiBuild);
 			}
 
 			return apiBuilds;
