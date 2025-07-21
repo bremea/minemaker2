@@ -1,7 +1,6 @@
 import type { ElysiaApp } from '$src/app';
 import { getBuilds, getGame } from '@minemaker/db';
 import { ApiBuild, InternalApiError } from '@minemaker/types';
-import { randomUUIDv7 } from 'bun';
 import { t } from 'elysia';
 import { verifiedUsersOnly } from 'lib/utils/auth';
 
@@ -28,6 +27,7 @@ export default (app: ElysiaApp) =>
 					userId: build.account_id,
 					status: build.status,
 					description: build.description,
+					time: build.time,
 					builderId: build.builder_id,
 					submitterIp: build.submitter_ip
 				};

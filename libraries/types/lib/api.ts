@@ -84,6 +84,7 @@ export interface ApiBuild {
 	userId: string;
 	status: string;
 	success: boolean;
+	time: number;
 	description: string;
 	builderId: string;
 	submitterIp: string;

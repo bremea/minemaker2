@@ -96,6 +96,7 @@ export interface DatabaseBuild extends RowDataPacket {
 	log_object: string;
 	submitter_ip: string;
 	builder_id: string;
+	time: number;
 	submitted_at: string;
 	finished_at: string;
 }
