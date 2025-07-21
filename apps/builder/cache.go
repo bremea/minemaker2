@@ -84,12 +84,12 @@ func NewDownloadCache() (DownloadCache, error) {
 }
 
 func (dc DownloadCache) Get(obj string, bl *Logger) (string, error) {
-	cacheDir := filepath.Join(os.TempDir(), "mmb-cache")
-	path := filepath.Join(cacheDir, obj)
-
 	p, ok := dc[obj]
 	if ok {
-		if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
+		_, err := os.Stat(p)
+		bl.Warn(fmt.Sprintf("cache err: %s", err.Error()))
+		if errors.Is(err, os.ErrNotExist) {
+
 			delete(dc, obj)
 		} else {
 			bl.Log(fmt.Sprintf("cache hit for %s", obj))
