@@ -2,6 +2,7 @@ import type { ElysiaApp } from '$src/app';
 import { getBuild, updateBuild } from '@minemaker/db';
 import { t } from 'elysia';
 import { serverOnly } from 'lib/utils/auth';
+import { convertToApiBuild } from 'lib/utils/builds';
 
 export default (app: ElysiaApp) =>
 	app.use(serverOnly).patch(
@@ -25,7 +26,7 @@ export default (app: ElysiaApp) =>
 				buildData.time = body.time;
 			}
 
-			await updateBuild(
+			const build = await updateBuild(
 				params.bid,
 				buildData.success,
 				body.status,
@@ -36,7 +37,7 @@ export default (app: ElysiaApp) =>
 				buildData.time
 			);
 
-			return { ok: true };
+			return convertToApiBuild(build);
 		},
 		{
 			params: t.Object({
