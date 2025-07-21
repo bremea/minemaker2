@@ -8,8 +8,8 @@ import { getGame, updateGame } from '@minemaker/db';
 export default (app: ElysiaApp) =>
 	app.use(verifiedUsersOnly).patch(
 		'',
-		async ({ params: { gameId }, body, id, authenticated }) => {
-			const project = await getGame(gameId);
+		async ({ params, body, id, authenticated }) => {
+			const project = await getGame(params.gameId);
 
 			if (!authenticated || id !== project.owner) {
 				throw new InternalApiError(400, 'Unauthorized');

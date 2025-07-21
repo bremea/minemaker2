@@ -1,16 +1,21 @@
 import type { ElysiaApp } from '$src/app';
-import { createBuild } from '@minemaker/db';
+import { createBuild, isGameOwner } from '@minemaker/db';
 import { BuildSubmitData, submit } from '@minemaker/realtime';
-import { ApiBuild } from '@minemaker/types';
+import { ApiBuild, InternalApiError } from '@minemaker/types';
 import { t } from 'elysia';
 import { verifiedUsersOnly } from 'lib/utils/auth';
+import { convertToApiBuild } from 'lib/utils/builds';
 
 export default (app: ElysiaApp) =>
 	app.use(verifiedUsersOnly).post(
 		'/',
-		async ({ params, body, snowflake, id, ip }) => {
+		async ({ params, authenticated, body, snowflake, id, ip }) => {
 			if (ip === '::1' || ip === '::ffff:127.0.0.1') {
 				ip = '127.0.0.1';
+			}
+
+			if (!authenticated || !(await isGameOwner(params.gameId, id))) {
+				throw new InternalApiError(400, 'Unauthorized');
 			}
 
 			const buildId = snowflake.nextId().toString();
@@ -25,7 +30,7 @@ export default (app: ElysiaApp) =>
 				buildId,
 				params.gameId,
 				id,
-				false,
+				null,
 				null,
 				new Date(Date.now()).toISOString().split('.')[0] + 'Z',
 				body.description ?? '',
@@ -34,20 +39,7 @@ export default (app: ElysiaApp) =>
 
 			submit(`queues.builds.${params.gameId}`, JSON.stringify(buildData));
 
-			const apiBuild: ApiBuild = {
-				buildId: build.build_id,
-				gameId: build.game_id,
-				success: build.success,
-				submittedAt: build.submitted_at,
-				finishedAt: build.finished_at,
-				userId: build.account_id,
-				status: build.status,
-				description: build.description,
-				builderId: build.builder_id,
-				submitterIp: build.submitter_ip
-			};
-
-			return apiBuild;
+			return convertToApiBuild(build);
 		},
 		{
 			params: t.Object({

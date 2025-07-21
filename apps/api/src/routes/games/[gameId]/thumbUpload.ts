@@ -1,17 +1,15 @@
 import type { ElysiaApp } from '$src/app';
-import { getGame, deleteGame, updateGame } from '@minemaker/db';
+import { getGame, deleteGame, updateGame, isGameOwner } from '@minemaker/db';
 import { InternalApiError } from '@minemaker/types';
 import { t } from 'elysia';
-import { authenticatedUsersOnly } from 'lib/utils/auth';
+import { authenticatedUsersOnly, verifiedUsersOnly } from 'lib/utils/auth';
 
 // get thumbnail upload link for this project
 export default (app: ElysiaApp) =>
-	app.use(authenticatedUsersOnly).get(
+	app.use(verifiedUsersOnly).get(
 		'',
-		async ({ params: { gameId }, id, authenticated }) => {
-			const project = await getGame(gameId);
-
-			if (!authenticated || project.owner !== id) {
+		async ({ params, id, authenticated }) => {
+			if (!authenticated || !(await isGameOwner(params.gameId, id))) {
 				throw new InternalApiError(400, 'Unauthorized');
 			}
 		},

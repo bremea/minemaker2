@@ -1,4 +1,6 @@
 import type { ElysiaApp } from '$src/app';
+import { isGameOwner } from '@minemaker/db';
+import { InternalApiError } from '@minemaker/types';
 import { randomUUIDv7 } from 'bun';
 import { t } from 'elysia';
 import { verifiedUsersOnly } from 'lib/utils/auth';
@@ -6,7 +8,11 @@ import { verifiedUsersOnly } from 'lib/utils/auth';
 export default (app: ElysiaApp) =>
 	app.use(verifiedUsersOnly).get(
 		'/',
-		async ({ params, r2 }) => {
+		async ({ params, r2, authenticated, id }) => {
+			if (!authenticated || !(await isGameOwner(params.gameId, id))) {
+				throw new InternalApiError(400, 'Unauthorized');
+			}
+
 			const uuid = randomUUIDv7();
 
 			const upload = r2.presign(uuid, {
