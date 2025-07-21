@@ -31,7 +31,7 @@
 		class="fixed top-0 left-0 z-50 flex h-screen w-screen items-center justify-center bg-black/50"
 	>
 		<div
-			class={`relative min-w-[400px] rounded-lg border-2 border-gray-600 bg-gray-700 p-8 shadow-lg space-y-2 ${className}`}
+			class={`relative min-w-[400px] max-w-[1000px] rounded-lg border-2 border-gray-600 bg-gray-700 p-8 shadow-lg space-y-2 ${className}`}
 			use:clickOutside
 			{...others}
 		>
