@@ -59,7 +59,7 @@ func main() {
 	for {
 		msg, err := iter.Next()
 		if err != nil {
-			log.Println("error while fetching next message in queue")
+			log.Println(err)
 			continue
 		}
 
@@ -123,16 +123,14 @@ func main() {
 		}
 
 		buildLog.Log("building rootfs...")
-		err = build(tar, buildData.BuildId, buildLog)
+		obj, err := build(filepath.Join(path, "dist"), tar, buildData.BuildId, buildLog)
 		if err != nil {
 			buildLog.Error(err.Error())
-			os.RemoveAll(path)
+			//os.RemoveAll(path)
 			continue
 		}
 
-		buildTime := 0
-		obj := buildData.BuildId + ".rootfs"
-
+		buildTime := buildLog.BuildTime()
 		buildLog.Log(fmt.Sprintf("build completed in %ds", buildTime))
 
 		logObj := buildData.BuildId + ".txt"
