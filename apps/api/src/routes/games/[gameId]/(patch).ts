@@ -3,7 +3,7 @@ import { getApiGame } from 'lib/utils/game';
 import { InternalApiError } from '@minemaker/types';
 import { t } from 'elysia';
 import { verifiedUsersOnly } from 'lib/utils/auth';
-import { getGame, updateGame } from '@minemaker/db';
+import { getGame, setBuildLive, updateGame } from '@minemaker/db';
 
 export default (app: ElysiaApp) =>
 	app.use(verifiedUsersOnly).patch(
@@ -15,9 +15,16 @@ export default (app: ElysiaApp) =>
 				throw new InternalApiError(400, 'Unauthorized');
 			}
 
-			const newData = { ...project, ...body };
+			if (body.description || body.public || body.name) {
+				const newData = { ...project, ...body };
 
-			await updateGame(id, newData.name, newData.description, newData.public);
+				await updateGame(params.gameId, newData.name, newData.description, newData.public);
+			}
+
+			if (body.liveBuild) {
+				await setBuildLive(params.gameId, body.liveBuild);
+			}
+			
 			return await getApiGame(id);
 		},
 		{
@@ -27,7 +34,8 @@ export default (app: ElysiaApp) =>
 			body: t.Object({
 				name: t.Optional(t.String()),
 				description: t.Optional(t.String()),
-				public: t.Optional(t.Boolean())
+				public: t.Optional(t.Boolean()),
+				liveBuild: t.Optional(t.String())
 			})
 		}
 	);

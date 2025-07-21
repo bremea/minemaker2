@@ -31,6 +31,11 @@ export async function updateGame(
 	]);
 }
 
+/** Sets a build as live */
+export async function setBuildLive(gameId: string, buildId: string): Promise<void> {
+	await pool.query('UPDATE games SET current_build = ? WHERE game_id = ?;', [buildId, gameId]);
+}
+
 /** Gets user's games by ID */
 export async function getUserGames(
 	ownerId: string

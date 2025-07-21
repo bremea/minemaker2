@@ -30,7 +30,7 @@ export async function deleteGame(client: RestClient, id: string): Promise<void> 
 export async function updateGame(
 	client: RestClient,
 	id: string,
-	data: { name?: string; description?: string; public?: boolean }
+	data: { name?: string; description?: string; public?: boolean; liveBuild?: string }
 ): Promise<ApiGame> {
 	return await client.request('PATCH', `games/${id}`, {
 		body: JSON.stringify(data)

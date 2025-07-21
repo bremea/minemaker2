@@ -23,7 +23,7 @@
 		};
 	}
 
-	let { children, class: className, open = false, ...others }: PopupProps = $props();
+	let { children, class: className, open = $bindable(false), ...others }: PopupProps = $props();
 </script>
 
 {#if open}

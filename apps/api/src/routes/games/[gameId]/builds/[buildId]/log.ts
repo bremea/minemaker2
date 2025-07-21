@@ -14,6 +14,11 @@ export default (app: ElysiaApp) =>
 
 			const builds = await getBuild(params.buildId);
 
+			const exists = await r2.exists(builds.log_object);
+			if (!exists) {
+				throw new NotFoundError();
+			}
+
 			try {
 				const log = r2.file(builds.log_object);
 				const url = log.presign({
