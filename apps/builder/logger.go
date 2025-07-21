@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"os"
 	"path/filepath"
 	"time"
@@ -53,10 +54,14 @@ func (l *Logger) Warn(content string) {
 	l.log("WARN", content)
 }
 
+func (l *Logger) BuildTime() int {
+	return int(math.Ceil(time.Since(l.StartTime).Seconds()))
+}
+
 func (l *Logger) Error(content string) error {
 	l.log("ERROR", content)
-	now := time.Now()
-	l.log("ERROR", fmt.Sprintf("build failed after %ds", now.Sub(l.StartTime)))
+	time := int(math.Ceil(time.Since(l.StartTime).Seconds()))
+	l.log("ERROR", fmt.Sprintf("build failed after %ds", time))
 
 	logObj := filepath.Base(l.File.Name())
 	err := l.Upload(logObj)
@@ -65,7 +70,7 @@ func (l *Logger) Error(content string) error {
 		return err
 	}
 
-	err = BuildFail(*l.ApiClient, l.BuildId, logObj)
+	err = BuildFail(*l.ApiClient, l.BuildId, logObj, time)
 	if err != nil {
 		log.Println(fmt.Errorf("error updating build info: %s", err.Error()))
 		return err
