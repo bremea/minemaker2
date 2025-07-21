@@ -3,6 +3,7 @@ import { getBuilds, getGame } from '@minemaker/db';
 import { ApiBuild, InternalApiError } from '@minemaker/types';
 import { t } from 'elysia';
 import { verifiedUsersOnly } from 'lib/utils/auth';
+import { convertToApiBuild } from 'lib/utils/builds';
 
 export default (app: ElysiaApp) =>
 	app.use(verifiedUsersOnly).get(
@@ -18,21 +19,7 @@ export default (app: ElysiaApp) =>
 			const apiBuilds: ApiBuild[] = [];
 
 			for (const build of builds) {
-				const apiBuild: ApiBuild = {
-					buildId: build.build_id,
-					gameId: build.game_id,
-					success: build.success,
-					submittedAt: build.submitted_at,
-					finishedAt: build.finished_at,
-					userId: build.account_id,
-					status: build.status,
-					description: build.description,
-					time: build.time,
-					builderId: build.builder_id,
-					submitterIp: build.submitter_ip
-				};
-
-				apiBuilds.push(apiBuild);
+				apiBuilds.push(convertToApiBuild(build));
 			}
 
 			return apiBuilds;
