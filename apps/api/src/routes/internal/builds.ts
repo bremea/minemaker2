@@ -21,6 +21,10 @@ export default (app: ElysiaApp) =>
 				buildData.artifact_object = body.object;
 			}
 
+			if (body.time) {
+				buildData.time = body.time;
+			}
+
 			await updateBuild(
 				params.bid,
 				buildData.success,
@@ -28,7 +32,8 @@ export default (app: ElysiaApp) =>
 				buildData.artifact_object,
 				buildData.log_object,
 				id ?? null,
-				body.finished ? new Date(Date.now()).toISOString().split('.')[0] + 'Z' : null
+				body.finished ? new Date(Date.now()).toISOString().split('.')[0] + 'Z' : null,
+				buildData.time
 			);
 
 			return { ok: true };
@@ -42,6 +47,7 @@ export default (app: ElysiaApp) =>
 				finished: t.Optional(t.Boolean()),
 				success: t.Optional(t.Boolean()),
 				object: t.Optional(t.String()),
+				time: t.Optional(t.Number()),
 				log: t.Optional(t.String())
 			})
 		}

@@ -5,6 +5,7 @@ import { DatabaseBuild } from '@minemaker/types';
 export async function createBuild(
 	id: string,
 	gameId: string,
+	accountId: string,
 	success: boolean,
 	artifactObject: string | null,
 	submitTime: string,
@@ -12,8 +13,8 @@ export async function createBuild(
 	ip: string
 ): Promise<DatabaseBuild> {
 	const [buildData] = await pool.query<DatabaseBuild[]>(
-		'INSERT INTO builds (build_id, game_id, success, artifact_object, submitted_at, description, submitter_ip) VALUES (?, ?, ?, ?, STR_TO_DATE(?, "%Y-%m-%dT%TZ"), ?, ?) RETURNING *;',
-		[id, gameId, success, artifactObject, submitTime, description, ip]
+		'INSERT INTO builds (build_id, game_id, account_id, success, artifact_object, submitted_at, description, submitter_ip) VALUES (?, ?, ?, ?, ?, STR_TO_DATE(?, "%Y-%m-%dT%TZ"), ?, ?) RETURNING *;',
+		[id, gameId, accountId, success, artifactObject, submitTime, description, ip]
 	);
 
 	if (buildData.length == 0) {
@@ -31,11 +32,12 @@ export async function updateBuild(
 	artifactObject: string | null,
 	logObject: string | null,
 	builderId: string | null,
-	finished: string | null
+	finished: string | null,
+	time: number | null
 ): Promise<DatabaseBuild> {
 	const [buildData] = await pool.query<DatabaseBuild[]>(
-		'UPDATE builds SET success = ?, status = ?, artifact_object = ?, log_object = ?, builder_id = ?, finished_at = STR_TO_DATE(?, "%Y-%m-%dT%TZ") WHERE build_id = ?; SELECT * FROM builds WHERE build_id = ?;',
-		[success, status, artifactObject, logObject, builderId, finished, id, id]
+		'UPDATE builds SET success = ?, status = ?, artifact_object = ?, log_object = ?, builder_id = ?, finished_at = STR_TO_DATE(?, "%Y-%m-%dT%TZ"), time = ? WHERE build_id = ?; SELECT * FROM builds WHERE build_id = ?;',
+		[success, status, artifactObject, logObject, builderId, finished, time, id, id]
 	);
 
 	if (buildData.length < 1) {

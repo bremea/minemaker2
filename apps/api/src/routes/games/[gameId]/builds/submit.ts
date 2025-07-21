@@ -8,7 +8,7 @@ import { verifiedUsersOnly } from 'lib/utils/auth';
 export default (app: ElysiaApp) =>
 	app.use(verifiedUsersOnly).post(
 		'/',
-		async ({ params, body, snowflake, ip }) => {
+		async ({ params, body, snowflake, id, ip }) => {
 			if (ip === '::1' || ip === '::ffff:127.0.0.1') {
 				ip = '127.0.0.1';
 			}
@@ -24,6 +24,7 @@ export default (app: ElysiaApp) =>
 			const build = await createBuild(
 				buildId,
 				params.gameId,
+				id,
 				false,
 				null,
 				new Date(Date.now()).toISOString().split('.')[0] + 'Z',
