@@ -70,12 +70,24 @@ func upload(path string, key string, bl *Logger) error {
 
 	bl.Log("Uploading with CRC32 checksum: " + checksum)
 
+	stat, err := f.Stat()
+	if err != nil {
+		return err
+	}
+
+	progressReader := &UploadProgressReader{
+		Reader:    f,
+		TotalSize: stat.Size(),
+		BuildLog:  bl,
+	}
+
 	_, err = client.PutObject(context.TODO(), &s3.PutObjectInput{
 		Bucket:            aws.String(bucketName),
 		Key:               aws.String(key),
 		ChecksumAlgorithm: types.ChecksumAlgorithmCrc32,
 		ChecksumCRC32:     aws.String(checksum),
-		Body:              f,
+		Body:              progressReader,
+		ContentLength:     &progressReader.TotalSize,
 	})
 	if err != nil {
 		bl.Error("upload error: " + err.Error())
