@@ -57,6 +57,16 @@ export async function getGame(gameId: string): Promise<Join<DatabaseGame, { onli
 	return gameData[0];
 }
 
+/** Checks if owner of the game matches a user ID */
+export async function isGameOwner(gameId: string, userId: string): Promise<boolean> {
+	const [gameData] = await pool.query<RowDataPacket[]>(
+		'SELECT 1 FROM games WHERE game_id = ? AND owner = ?;',
+		[gameId, userId]
+	);
+
+	return gameData.length > 0;
+}
+
 /** Gets most popular games */
 export async function getMostPopularGames(
 	limit: number = 10

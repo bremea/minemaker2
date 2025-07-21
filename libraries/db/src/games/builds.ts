@@ -6,7 +6,7 @@ export async function createBuild(
 	id: string,
 	gameId: string,
 	accountId: string,
-	success: boolean,
+	success: boolean | null,
 	artifactObject: string | null,
 	submitTime: string,
 	description: string,
@@ -68,7 +68,7 @@ export async function getBuilds(
 	offset: number = 0
 ): Promise<DatabaseBuild[]> {
 	const [buildData] = await pool.query<DatabaseBuild[]>(
-		'SELECT * FROM builds WHERE game_id = ? ORDER BY finished_at DESC LIMIT ? OFFSET ?;',
+		'SELECT * FROM builds WHERE game_id = ? ORDER BY submitted_at DESC LIMIT ? OFFSET ?;',
 		[gameId, limit, offset]
 	);
 

@@ -83,6 +83,24 @@ export default class RestClient {
 		return res;
 	}
 
+	public async requestResource(
+		method: HttpMethods,
+		url: string,
+		options: RequestOptions = { refreshIfUnauthorized: true }
+	): Promise<Blob> {
+		const headers: HeadersInit = {
+			...options?.headers
+		} as Record<string, string>;
+
+		const req = await fetch(url, {
+			method,
+			headers,
+			...options
+		});
+
+		return await req.blob();
+	}
+
 	public async refreshToken(useCookieAuth: boolean = false): Promise<void> {
 		if (this.options.refreshToken) {
 			const newToken = await tokenRefresh(

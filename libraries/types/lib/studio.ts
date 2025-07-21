@@ -4,6 +4,7 @@ export interface StudioProject {
 	id: string;
 	ownerId: string;
 	name: string;
+	liveBuild?: string;
 	description: string;
 	created_at: string;
 	public: boolean;

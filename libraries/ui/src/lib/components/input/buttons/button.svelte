@@ -15,11 +15,11 @@
 	}
 
 	const colorClasses: { [K in Props['color']]: string } = {
-		blue: 'bg-mm-blue hover:bg-mm-blue-light outline-mm-blue text-black',
-		purple: 'bg-mm-purple hover:bg-mm-purple-light outline-mm-purple text-black',
-		red: 'bg-red-500 hover:bg-red-400 outline-red-500 text-black',
-		gray: 'bg-gray-600 hover:bg-gray-500 outline-gray-600 text-white',
-		darkgray: 'bg-gray-800 hover:bg-gray-700 outline-gray-800 text-white'
+		blue: 'bg-mm-blue enabled:hover:bg-mm-blue-light outline-mm-blue text-black',
+		purple: 'bg-mm-purple enabled:hover:bg-mm-purple-light outline-mm-purple text-black',
+		red: 'bg-red-500 enabled:hover:bg-red-400 outline-red-500 text-black',
+		gray: 'bg-gray-600 enabled:hover:bg-gray-500 outline-gray-600 text-white',
+		darkgray: 'bg-gray-800 enabled:hover:bg-gray-700 outline-gray-800 text-white'
 	};
 
 	const sizeClasses: { [K in Props['size']]: string } = {
@@ -40,7 +40,7 @@
 </script>
 
 <button
-	class={`${colorClasses[color]} group relative flex h-min w-min cursor-pointer items-center space-x-2 rounded-full ${sizeClasses[size]} text-nowrap outline-0 transition-all hover:shadow-lg focus:outline-2 focus:outline-offset-2 active:scale-95 ${className}`}
+	class={`${colorClasses[color]} group relative flex h-min w-min cursor-pointer items-center space-x-2 rounded-lg ${sizeClasses[size]} text-nowrap outline-0 transition-all enabled:hover:shadow-lg enabled:focus:outline-2 enabled:focus:outline-offset-2 enabled:active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
 	{...others}
 >
 	{#if loading}

@@ -70,6 +70,7 @@ export interface ApiGame {
 	id: string;
 	ownerId: string;
 	name: string;
+	liveBuild?: string;
 	description: string;
 	created: string;
 	public: boolean;
@@ -83,13 +84,13 @@ export interface ApiBuild {
 	gameId: string;
 	userId: string;
 	status: string;
-	success: boolean;
-	time: number;
+	success?: boolean;
+	time?: number;
 	description: string;
-	builderId: string;
+	builderId?: string;
 	submitterIp: string;
 	submittedAt: string;
-	finishedAt: string;
+	finishedAt?: string;
 }
 
 export interface ApiTag {

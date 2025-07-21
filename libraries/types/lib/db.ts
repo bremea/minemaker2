@@ -73,6 +73,7 @@ export interface DatabaseGame extends RowDataPacket {
 	game_id: string;
 	owner: string;
 	name: string;
+	current_build: string | null;
 	description: string;
 	created_at: string;
 	public: boolean;
@@ -90,7 +91,7 @@ export interface DatabaseBuild extends RowDataPacket {
 	game_id: string;
 	account_id: string;
 	status: string;
-	success: boolean;
+	success: boolean | null;
 	description: string;
 	artifact_object: string;
 	log_object: string;

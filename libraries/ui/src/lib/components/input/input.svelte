@@ -41,7 +41,7 @@
 	{/if}
 	<input
 		bind:value
-		class={`group relative flex h-min w-full items-center space-x-2 rounded-full ${sizeClasses[componentSize]} focus:border-mm-blue border-2 border-gray-600 bg-gray-900 text-nowrap outline-0 transition-all hover:border-gray-500 hover:shadow-lg focus:bg-gray-900 ${className}`}
+		class={`group relative flex h-min w-full items-center space-x-2 rounded-lg ${sizeClasses[componentSize]} focus:border-mm-blue border-2 border-gray-600 bg-gray-900 text-nowrap outline-0 transition-all hover:border-gray-500 hover:shadow-lg focus:bg-gray-900 ${className}`}
 		{...others}
 	/>
 	{#if maxlength}
