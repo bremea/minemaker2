@@ -11,11 +11,12 @@ func ClaimBuild(a callergo.ApiClient, id string) error {
 	})
 }
 
-func BuildFail(a callergo.ApiClient, id string, log string) error {
+func BuildFail(a callergo.ApiClient, id string, log string, time int) error {
 	return callergo.UpdateBuild(a, id, callergo.UpdateBuildBodyData{
 		Status:   "Failed",
 		Success:  false,
 		Log:      log,
+		Time:     time,
 		Finished: true,
 	})
 }
@@ -26,6 +27,7 @@ func BuildSuccess(a callergo.ApiClient, id string, time int, obj string, log str
 		Success:  true,
 		Object:   obj,
 		Log:      log,
+		Time:     time,
 		Finished: true,
 	})
 }
