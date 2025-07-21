@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/bremea/minemaker2/libraries/callergo"
 	"github.com/joho/godotenv"
@@ -36,8 +35,7 @@ func main() {
 
 	a := callergo.NewApiClient(os.Getenv("API_TOKEN"), os.Getenv("API_URL"))
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
+	ctx := context.Background()
 	nc, _ := nats.Connect(nats.DefaultURL)
 
 	js, _ := jetstream.New(nc)
@@ -53,6 +51,8 @@ func main() {
 	c, _ := js.CreateOrUpdateConsumer(ctx, "BUILDS", jetstream.ConsumerConfig{
 		AckPolicy: jetstream.AckExplicitPolicy,
 	})
+
+	log.Println("builder online")
 
 	iter, _ := c.Messages()
 	defer iter.Stop()
@@ -126,7 +126,7 @@ func main() {
 		obj, err := build(filepath.Join(path, "dist"), tar, buildData.BuildId, buildLog)
 		if err != nil {
 			buildLog.Error(err.Error())
-			//os.RemoveAll(path)
+			os.RemoveAll(path)
 			continue
 		}
 

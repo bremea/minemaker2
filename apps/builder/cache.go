@@ -87,10 +87,10 @@ func (dc DownloadCache) Get(obj string, bl *Logger) (string, error) {
 	p, ok := dc[obj]
 	if ok {
 		_, err := os.Stat(p)
-		bl.Warn(fmt.Sprintf("cache err: %s", err.Error()))
 		if errors.Is(err, os.ErrNotExist) {
-
 			delete(dc, obj)
+		} else if err != nil {
+			bl.Warn(fmt.Sprintf("cache err: %s", err.Error()))
 		} else {
 			bl.Log(fmt.Sprintf("cache hit for %s", obj))
 			return p, nil
