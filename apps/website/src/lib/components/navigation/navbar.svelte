@@ -33,7 +33,7 @@
 </script>
 
 <nav
-	class="relative z-50 flex w-screen justify-end bg-gray-600 px-12 py-2 h-14 shadow-lg"
+	class="relative z-50 flex h-14 w-screen justify-end bg-gray-600 px-12 py-2 shadow-lg"
 	bind:this={topNav}
 >
 	<a
@@ -44,9 +44,14 @@
 		<span class="text-mm-blue text-xs">beta</span>
 	</a>
 
-	<div class="pointer-events-none flex w-full flex-1 items-center justify-center pl-62 h-10">
+	<div class="pointer-events-none flex h-10 w-full flex-1 items-center justify-center pl-62">
 		<div class="pointer-events-auto flex h-full w-full items-center justify-center space-x-2">
-			<Input class="bg-gray-800! text-white h-full! outline-gray-800 hover:bg-gray-700 border-gray-800 w-64!" componentSize="sm" stretchHeight={true} />
+			<Input
+				class="h-full! w-64! border-gray-800 bg-gray-800! text-white outline-gray-800 hover:bg-gray-700"
+				componentSize="sm"
+				stretchHeight={true}
+				placeholder="Search..."
+			/>
 			<LinkButton size="sm" color="darkgray" class="h-full!">
 				<FluentSearch20Filled class="h-full" />
 			</LinkButton>
@@ -62,7 +67,7 @@
 							src={`https://mc-heads.net/avatar/${userState!.player.uuid.replace(/-/g, '')}`}
 							alt="Player head"
 							title={userState!.player.username}
-							class="aspect-square size-8"
+							class="aspect-square size-8 select-none"
 						/>
 					</a>
 				{:else}
@@ -71,15 +76,15 @@
 							src="https://mc-heads.net/avatar/MHF_Steve"
 							alt="Player head"
 							title={userState!.email}
-							class="aspect-square size-8"
+							class="aspect-square size-8 select-none"
 						/>
 					</a>
 				{/if}
 				<div class="flex items-center">
 					<img src="/gem.png" alt="Gem icon" class="h-10" />
-					<span class="text-xl font-bold"
-						>{!userState?.guest && userState?.verified ? userState.gems : 0}</span
-					>
+					<span class="text-xl font-bold">
+						{!userState?.guest && userState?.verified ? userState.gems : 0}
+					</span>
 				</div>
 			</div>
 		{:else}
