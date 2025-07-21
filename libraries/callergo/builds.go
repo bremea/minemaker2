@@ -4,6 +4,7 @@ type UpdateBuildBodyData struct {
 	Status   string `json:"status"`
 	Success  bool   `json:"success"`
 	Object   string `json:"object"`
+	Time     int    `json:"time"`
 	Log      string `json:"log"`
 	Finished bool   `json:"finished"`
 }
